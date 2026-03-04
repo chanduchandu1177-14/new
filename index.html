@@ -1,63 +1,889 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PawSnap | Share Your Pet's Moments</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PetStory — Share your pet's fleeting moments. 24-hour disappearing stories for pet lovers." />
+  <meta name="theme-color" content="#0f0f14" />
+  <title>PetStory — Your Pet's 24-Hour Moments</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <header class="navbar">
-        <div class="logo">Paw<span>Snap</span></div>
-        <nav>
-            <a href="#" class="nav-link">Features</a>
-            <a href="#" class="btn-secondary">Login</a>
-        </nav>
-    </header>
+  <!-- ═══════════════════════════════════════════
+       GLOBAL HEADER / NAV (feed-only visible)
+  ══════════════════════════════════════════════ -->
+  <header class="app-header" id="app-header" aria-label="Application header">
+    <nav class="app-nav" aria-label="Main navigation">
+      <a href="#feed" class="nav-logo" aria-label="PetStory home">
+        <span class="nav-logo-icon" aria-hidden="true">🐾</span>
+        <span class="nav-logo-text">PetStory</span>
+      </a>
+      <div class="nav-actions">
+        <a href="#create" class="btn btn-accent btn-sm" aria-label="Add new story">
+          <span aria-hidden="true">+</span> Add Story
+        </a>
+        <a href="#profile" class="nav-avatar" aria-label="View profile">
+          <span class="avatar-placeholder" aria-hidden="true">🐶</span>
+        </a>
+      </div>
+    </nav>
+  </header>
 
-    <main>
-        <section class="hero">
-            <div class="container">
-                <span class="badge">New: Video Snaps</span>
-                <h1>Share Your Pet’s Moments</h1>
-                <p class="subheading">Capture the zoomies, the naps, and the chaos. Every story stays for 24 hours—just like a nap, it’s gone before you know it.</p>
-                <div class="cta-group">
-                    <a href="#" class="btn-primary">Sign Up Now</a>
-                    <a href="#" class="btn-secondary">Login</a>
+  <!-- ═══════════════════════════════════════════
+       MAIN CONTENT AREA
+  ══════════════════════════════════════════════ -->
+  <main id="main-content">
+
+    <!-- ─────────────────────────────────────────
+         SECTION 1: LANDING / HOME
+    ──────────────────────────────────────────── -->
+    <section id="home" class="section section-landing active" aria-label="Landing page">
+
+      <div class="landing-bg-orbs" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+      </div>
+
+      <div class="container">
+
+        <!-- Hero -->
+        <div class="landing-hero">
+          <div class="landing-logo" aria-label="PetStory logo">
+            <span class="logo-paw" aria-hidden="true">🐾</span>
+            <span class="logo-wordmark">PetStory</span>
+          </div>
+          <h1 class="landing-headline">Share Your<br /><em>Pet's Moments</em></h1>
+          <p class="landing-subheadline">
+            Capture your furry, feathered, and scaly companions in 24-hour disappearing stories. Beautiful. Fleeting. Unforgettable.
+          </p>
+          <div class="landing-cta-group">
+            <a href="#signup" class="btn btn-accent btn-lg">Get Started Free</a>
+            <a href="#login" class="btn btn-ghost btn-lg">Sign In</a>
+          </div>
+        </div>
+
+        <!-- Feature Cards -->
+        <div class="feature-grid" role="list" aria-label="Platform features">
+
+          <article class="feature-card" role="listitem">
+            <div class="feature-icon" aria-hidden="true">⏳</div>
+            <h3 class="feature-title">24-Hour Stories</h3>
+            <p class="feature-desc">Every story vanishes after 24 hours. Keep your feed fresh, spontaneous, and always in the moment.</p>
+          </article>
+
+          <article class="feature-card" role="listitem">
+            <div class="feature-icon" aria-hidden="true">📸</div>
+            <h3 class="feature-title">Image + Caption Only</h3>
+            <p class="feature-desc">No clutter. Just one beautiful photo and a caption. Pure, distraction-free pet moments.</p>
+          </article>
+
+          <article class="feature-card" role="listitem">
+            <div class="feature-icon" aria-hidden="true">🐾</div>
+            <h3 class="feature-title">Pet Lovers Community</h3>
+            <p class="feature-desc">Connect with thousands of passionate pet owners who understand the joy of animal companionship.</p>
+          </article>
+
+        </div>
+
+        <!-- Trust Bar -->
+        <div class="trust-bar" aria-label="Community statistics">
+          <div class="trust-stat">
+            <span class="trust-number">47K+</span>
+            <span class="trust-label">Pet Owners</span>
+          </div>
+          <div class="trust-divider" aria-hidden="true"></div>
+          <div class="trust-stat">
+            <span class="trust-number">230K+</span>
+            <span class="trust-label">Stories Shared</span>
+          </div>
+          <div class="trust-divider" aria-hidden="true"></div>
+          <div class="trust-stat">
+            <span class="trust-number">12+</span>
+            <span class="trust-label">Pet Types</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         SECTION 2: LOGIN
+    ──────────────────────────────────────────── -->
+    <section id="login" class="section section-auth" aria-label="Login page">
+      <div class="container container-narrow">
+
+        <div class="auth-card">
+          <div class="auth-header">
+            <a href="#home" class="auth-logo" aria-label="Back to home">
+              <span aria-hidden="true">🐾</span> PetStory
+            </a>
+            <h2 class="auth-title">Welcome back</h2>
+            <p class="auth-subtitle">Sign in to see what your pets' friends are up to</p>
+          </div>
+
+          <form class="auth-form" id="login-form" novalidate aria-label="Login form">
+
+            <div class="form-group">
+              <label class="form-label" for="login-email">Email address</label>
+              <input
+                class="form-input"
+                type="email"
+                id="login-email"
+                name="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="login-password">Password</label>
+              <div class="input-wrapper">
+                <input
+                  class="form-input"
+                  type="password"
+                  id="login-password"
+                  name="password"
+                  placeholder="••••••••"
+                  autocomplete="current-password"
+                  required
+                />
+              </div>
+            </div>
+
+            <a href="#feed" class="btn btn-accent btn-full btn-lg" role="button" aria-label="Sign in to your account">
+              Sign In
+            </a>
+
+          </form>
+
+          <p class="auth-switch">
+            Don't have an account? <a href="#signup" class="auth-link">Create one free</a>
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         SECTION 3: SIGN UP
+    ──────────────────────────────────────────── -->
+    <section id="signup" class="section section-auth" aria-label="Sign up page">
+      <div class="container container-narrow">
+
+        <div class="auth-card">
+          <div class="auth-header">
+            <a href="#home" class="auth-logo" aria-label="Back to home">
+              <span aria-hidden="true">🐾</span> PetStory
+            </a>
+            <h2 class="auth-title">Create your account</h2>
+            <p class="auth-subtitle">Join thousands of pet lovers sharing daily moments</p>
+          </div>
+
+          <form class="auth-form" id="signup-form" novalidate aria-label="Sign up form">
+
+            <div class="form-group">
+              <label class="form-label" for="signup-username">Username</label>
+              <input
+                class="form-input"
+                type="text"
+                id="signup-username"
+                name="username"
+                placeholder="@yourhandle"
+                autocomplete="username"
+                required
+                minlength="3"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="signup-email">Email address</label>
+              <input
+                class="form-input"
+                type="email"
+                id="signup-email"
+                name="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="signup-password">Password</label>
+              <input
+                class="form-input"
+                type="password"
+                id="signup-password"
+                name="password"
+                placeholder="Min. 8 characters"
+                autocomplete="new-password"
+                required
+                minlength="8"
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="signup-petname">Pet's Name</label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="signup-petname"
+                  name="petname"
+                  placeholder="Buddy"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="signup-pettype">Pet Type</label>
+                <select class="form-input form-select" id="signup-pettype" name="pettype" required>
+                  <option value="" disabled selected>Select type</option>
+                  <option value="dog">🐕 Dog</option>
+                  <option value="cat">🐈 Cat</option>
+                  <option value="rabbit">🐇 Rabbit</option>
+                  <option value="bird">🐦 Bird</option>
+                  <option value="hamster">🐹 Hamster</option>
+                  <option value="fish">🐠 Fish</option>
+                  <option value="turtle">🐢 Turtle</option>
+                  <option value="snake">🐍 Snake</option>
+                  <option value="guinea-pig">Guinea Pig</option>
+                  <option value="ferret">Ferret</option>
+                  <option value="hedgehog">🦔 Hedgehog</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <a href="#feed" class="btn btn-accent btn-full btn-lg" role="button" aria-label="Create your account">
+              Create Account
+            </a>
+
+          </form>
+
+          <p class="auth-switch">
+            Already have an account? <a href="#login" class="auth-link">Sign in</a>
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         SECTION 4: FEED
+    ──────────────────────────────────────────── -->
+    <section id="feed" class="section section-feed" aria-label="Story feed">
+      <div class="container">
+
+        <!-- Stories Ring Bar -->
+        <div class="stories-ring-bar" role="list" aria-label="Active stories">
+          <div class="ring-story active-story" role="listitem" aria-label="Your story">
+            <div class="ring-avatar">
+              <span aria-hidden="true">🐶</span>
+            </div>
+            <span class="ring-label">Your Story</span>
+          </div>
+          <div class="ring-story" role="listitem" aria-label="Whiskers story">
+            <div class="ring-avatar">
+              <span aria-hidden="true">🐈</span>
+            </div>
+            <span class="ring-label">Whiskers</span>
+          </div>
+          <div class="ring-story" role="listitem" aria-label="Coco story">
+            <div class="ring-avatar">
+              <span aria-hidden="true">🦜</span>
+            </div>
+            <span class="ring-label">Coco</span>
+          </div>
+          <div class="ring-story" role="listitem" aria-label="Rex story">
+            <div class="ring-avatar">
+              <span aria-hidden="true">🐕</span>
+            </div>
+            <span class="ring-label">Rex</span>
+          </div>
+          <div class="ring-story" role="listitem" aria-label="Nibbles story">
+            <div class="ring-avatar">
+              <span aria-hidden="true">🐇</span>
+            </div>
+            <span class="ring-label">Nibbles</span>
+          </div>
+          <div class="ring-story" role="listitem" aria-label="Nemo story">
+            <div class="ring-avatar">
+              <span aria-hidden="true">🐠</span>
+            </div>
+            <span class="ring-label">Nemo</span>
+          </div>
+        </div>
+
+        <!-- Story Cards -->
+        <div class="feed-stories" role="feed" aria-label="Pet stories">
+
+          <!-- Story Card 1 -->
+          <article class="story-card" aria-label="Story by @goldenmamakai">
+            <header class="story-card-header">
+              <div class="story-author">
+                <div class="story-avatar" aria-hidden="true">🐕</div>
+                <div class="story-meta">
+                  <span class="story-petname">Kai</span>
+                  <span class="story-username">@goldenmamakai</span>
                 </div>
+              </div>
+              <div class="story-badge" aria-label="17 hours remaining">
+                <span class="badge-dot" aria-hidden="true"></span>
+                17h left
+              </div>
+            </header>
+
+            <div class="story-image-wrap" aria-label="Pet photo">
+              <div class="story-image-placeholder story-img-1" role="img" aria-label="Golden retriever playing in autumn leaves">
+                <div class="img-placeholder-content">
+                  <span class="img-placeholder-icon" aria-hidden="true">🐕</span>
+                  <span class="img-placeholder-text">Golden Retriever</span>
+                </div>
+              </div>
+              <div class="story-image-overlay" aria-hidden="true"></div>
             </div>
+
+            <footer class="story-card-footer">
+              <p class="story-caption">Kai discovered leaf piles are basically giant toys. Spent 45 minutes doing zoomies through every pile in the park 🍂✨</p>
+              <div class="story-expires" aria-live="polite">
+                <span class="expires-icon" aria-hidden="true">⏱</span>
+                <span>Expires in 17 hours</span>
+              </div>
+            </footer>
+          </article>
+
+          <!-- Story Card 2 -->
+          <article class="story-card" aria-label="Story by @whiskersluna">
+            <header class="story-card-header">
+              <div class="story-author">
+                <div class="story-avatar" aria-hidden="true">🐈</div>
+                <div class="story-meta">
+                  <span class="story-petname">Luna</span>
+                  <span class="story-username">@whiskersluna</span>
+                </div>
+              </div>
+              <div class="story-badge story-badge-urgent" aria-label="3 hours remaining">
+                <span class="badge-dot" aria-hidden="true"></span>
+                3h left
+              </div>
+            </header>
+
+            <div class="story-image-wrap" aria-label="Pet photo">
+              <div class="story-image-placeholder story-img-2" role="img" aria-label="Cat sleeping in a sunbeam">
+                <div class="img-placeholder-content">
+                  <span class="img-placeholder-icon" aria-hidden="true">🐈</span>
+                  <span class="img-placeholder-text">Tabby Cat</span>
+                </div>
+              </div>
+              <div class="story-image-overlay" aria-hidden="true"></div>
+            </div>
+
+            <footer class="story-card-footer">
+              <p class="story-caption">Found the perfect sunbeam at exactly 2:14pm. Luna has claimed this spot indefinitely. Do not disturb 🌞😴</p>
+              <div class="story-expires story-expires-urgent" aria-live="polite">
+                <span class="expires-icon" aria-hidden="true">⚠️</span>
+                <span>Expiring soon — 3 hours left</span>
+              </div>
+            </footer>
+          </article>
+
+          <!-- Story Card 3 -->
+          <article class="story-card" aria-label="Story by @parrotdad_marco">
+            <header class="story-card-header">
+              <div class="story-author">
+                <div class="story-avatar" aria-hidden="true">🦜</div>
+                <div class="story-meta">
+                  <span class="story-petname">Coco</span>
+                  <span class="story-username">@parrotdad_marco</span>
+                </div>
+              </div>
+              <div class="story-badge" aria-label="21 hours remaining">
+                <span class="badge-dot" aria-hidden="true"></span>
+                21h left
+              </div>
+            </header>
+
+            <div class="story-image-wrap" aria-label="Pet photo">
+              <div class="story-image-placeholder story-img-3" role="img" aria-label="Colorful parrot on a perch">
+                <div class="img-placeholder-content">
+                  <span class="img-placeholder-icon" aria-hidden="true">🦜</span>
+                  <span class="img-placeholder-text">African Grey Parrot</span>
+                </div>
+              </div>
+              <div class="story-image-overlay" aria-hidden="true"></div>
+            </div>
+
+            <footer class="story-card-footer">
+              <p class="story-caption">Coco learned to say "good morning" today but only says it at 11pm. Peak chaos energy from this bird 🦜💚</p>
+              <div class="story-expires" aria-live="polite">
+                <span class="expires-icon" aria-hidden="true">⏱</span>
+                <span>Expires in 21 hours</span>
+              </div>
+            </footer>
+          </article>
+
+        </div>
+
+        <!-- Load More -->
+        <div class="feed-end">
+          <p class="feed-end-text">You've seen all active stories.</p>
+          <a href="#create" class="btn btn-ghost btn-sm">Be the first to post tomorrow ✨</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         SECTION 5: CREATE STORY
+    ──────────────────────────────────────────── -->
+    <section id="create" class="section section-create" aria-label="Create story page">
+      <div class="container container-narrow">
+
+        <div class="page-header">
+          <a href="#feed" class="back-btn" aria-label="Back to feed">
+            <span aria-hidden="true">←</span>
+          </a>
+          <h2 class="page-title">New Story</h2>
+          <span class="page-header-spacer" aria-hidden="true"></span>
+        </div>
+
+        <form class="create-form" id="create-form" novalidate aria-label="Create story form">
+
+          <!-- Upload Zone -->
+          <div class="upload-zone" id="upload-zone" role="button" tabindex="0" aria-label="Upload pet photo. Click or drag and drop.">
+            <div class="upload-zone-inner">
+              <div class="upload-icon" aria-hidden="true">📷</div>
+              <p class="upload-title">Drop your pet photo here</p>
+              <p class="upload-hint">or click to browse</p>
+              <p class="upload-spec">JPG, PNG, WEBP — Max 10MB</p>
+            </div>
+            <input
+              type="file"
+              id="story-image"
+              name="image"
+              accept="image/*"
+              class="upload-input visually-hidden"
+              aria-label="Choose image file"
+            />
+          </div>
+
+          <!-- Image Preview -->
+          <div class="image-preview-wrap" id="image-preview" aria-label="Image preview" aria-live="polite">
+            <div class="image-preview-placeholder">
+              <span aria-hidden="true">🖼️</span>
+              <span>Preview will appear here</span>
+            </div>
+          </div>
+
+          <!-- Caption -->
+          <div class="form-group">
+            <label class="form-label" for="story-caption">
+              Caption
+              <span class="label-hint" aria-label="optional">Optional</span>
+            </label>
+            <textarea
+              class="form-input form-textarea"
+              id="story-caption"
+              name="caption"
+              placeholder="What's your pet up to? Share the moment..."
+              maxlength="150"
+              rows="4"
+              aria-describedby="char-counter"
+            ></textarea>
+            <div class="char-counter" id="char-counter" aria-live="polite" aria-atomic="true">
+              <span id="char-count">0</span> / 150 characters
+            </div>
+          </div>
+
+          <!-- Story Duration Info -->
+          <div class="create-info-card" role="note" aria-label="Story duration information">
+            <span class="create-info-icon" aria-hidden="true">⏳</span>
+            <div>
+              <strong>Your story expires in 24 hours</strong>
+              <p>After 24 hours, this story will be permanently deleted from all feeds.</p>
+            </div>
+          </div>
+
+          <a href="#feed" class="btn btn-accent btn-full btn-lg" role="button" aria-label="Post your story">
+            Post Story
+          </a>
+
+        </form>
+
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         SECTION 6: PROFILE
+    ──────────────────────────────────────────── -->
+    <section id="profile" class="section section-profile" aria-label="Profile page">
+      <div class="container">
+
+        <div class="page-header">
+          <a href="#feed" class="back-btn" aria-label="Back to feed">
+            <span aria-hidden="true">←</span>
+          </a>
+          <h2 class="page-title">Profile</h2>
+          <a href="#settings" class="icon-btn" aria-label="Open settings">⚙️</a>
+        </div>
+
+        <!-- Profile Hero -->
+        <div class="profile-hero">
+          <div class="profile-avatar-ring" aria-hidden="true">
+            <div class="profile-avatar-inner">
+              <span class="profile-avatar-emoji" aria-hidden="true">🐶</span>
+            </div>
+          </div>
+          <div class="profile-info">
+            <h1 class="profile-username">@goldenmamakai</h1>
+            <p class="profile-petline">
+              <span class="profile-petname">Kai</span>
+              <span class="profile-separator" aria-hidden="true">·</span>
+              <span class="profile-pettype">🐕 Golden Retriever</span>
+            </p>
+          </div>
+          <a href="#settings" class="btn btn-ghost btn-sm profile-edit-btn">Edit Profile</a>
+        </div>
+
+        <!-- Profile Stats -->
+        <div class="profile-stats" role="list" aria-label="Profile statistics">
+          <div class="profile-stat" role="listitem">
+            <span class="stat-value">24</span>
+            <span class="stat-label">Total Stories</span>
+          </div>
+          <div class="profile-stat" role="listitem">
+            <span class="stat-value">2</span>
+            <span class="stat-label">Active Now</span>
+          </div>
+          <div class="profile-stat" role="listitem">
+            <span class="stat-value">14</span>
+            <span class="stat-label">Days Streak</span>
+          </div>
+        </div>
+
+        <!-- Active Stories -->
+        <section class="profile-stories" aria-label="Active stories">
+          <h3 class="section-label">Active Stories</h3>
+
+          <div class="profile-story-grid" role="list" aria-label="Your active stories">
+
+            <article class="profile-story-card" role="listitem" aria-label="Park zoomies story">
+              <div class="profile-story-thumb story-img-1" role="img" aria-label="Kai in the park">
+                <span aria-hidden="true">🐕</span>
+              </div>
+              <div class="profile-story-meta">
+                <span class="profile-story-caption">Kai discovered leaf piles…</span>
+                <span class="profile-story-badge" aria-label="17 hours remaining">17h left</span>
+              </div>
+            </article>
+
+            <article class="profile-story-card" role="listitem" aria-label="Morning walk story">
+              <div class="profile-story-thumb story-img-4" role="img" aria-label="Kai on a morning walk">
+                <span aria-hidden="true">🌅</span>
+              </div>
+              <div class="profile-story-meta">
+                <span class="profile-story-caption">Best morning walk ever…</span>
+                <span class="profile-story-badge" aria-label="21 hours remaining">21h left</span>
+              </div>
+            </article>
+
+          </div>
+
+          <div class="profile-stories-empty" aria-label="No more active stories message">
+            <p>Stories expire after 24h. <a href="#create" class="auth-link">Post a new one?</a></p>
+          </div>
+
         </section>
 
-        <section class="features">
-            <div class="container grid">
-                <article class="feature-card">
-                    <div class="icon">🕒</div>
-                    <h3>Ephemeral Joy</h3>
-                    <p>Post your pet's best moments. They vanish in 24 hours, keeping your feed fresh and pressure-free.</p>
-                </article>
+      </div>
+    </section>
 
-                <article class="feature-card">
-                    <div class="icon">🐾</div>
-                    <h3>Pets Only</h3>
-                    <p>No politics, no drama. Just a community of animal lovers sharing pure, unfiltered cuteness.</p>
-                </article>
+    <!-- ─────────────────────────────────────────
+         SECTION 7: SETTINGS
+    ──────────────────────────────────────────── -->
+    <section id="settings" class="section section-settings" aria-label="Settings page">
+      <div class="container container-narrow">
 
-                <article class="feature-card">
-                    <div class="icon">🔒</div>
-                    <h3>Private Paws</h3>
-                    <p>Control who sees your pet's daily adventures with industry-leading privacy settings.</p>
-                </article>
+        <div class="page-header">
+          <a href="#profile" class="back-btn" aria-label="Back to profile">
+            <span aria-hidden="true">←</span>
+          </a>
+          <h2 class="page-title">Settings</h2>
+          <span class="page-header-spacer" aria-hidden="true"></span>
+        </div>
+
+        <form class="settings-form" id="settings-form" novalidate aria-label="Settings form">
+
+          <!-- Account Settings -->
+          <fieldset class="settings-group">
+            <legend class="settings-group-title">Account</legend>
+
+            <div class="form-group">
+              <label class="form-label" for="settings-username">Username</label>
+              <input
+                class="form-input"
+                type="text"
+                id="settings-username"
+                name="username"
+                value="@goldenmamakai"
+                autocomplete="username"
+              />
             </div>
-        </section>
-    </main>
 
-    <footer>
-        <p>&copy; 2026 PawSnap. All tails wagging.</p>
-    </footer>
+          </fieldset>
+
+          <!-- Pet Settings -->
+          <fieldset class="settings-group">
+            <legend class="settings-group-title">Pet Profile</legend>
+
+            <div class="form-group">
+              <label class="form-label" for="settings-petname">Pet's Name</label>
+              <input
+                class="form-input"
+                type="text"
+                id="settings-petname"
+                name="petname"
+                value="Kai"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="settings-pettype">Pet Type</label>
+              <select class="form-input form-select" id="settings-pettype" name="pettype">
+                <option value="dog" selected>🐕 Dog</option>
+                <option value="cat">🐈 Cat</option>
+                <option value="rabbit">🐇 Rabbit</option>
+                <option value="bird">🐦 Bird</option>
+                <option value="hamster">🐹 Hamster</option>
+                <option value="fish">🐠 Fish</option>
+                <option value="turtle">🐢 Turtle</option>
+                <option value="snake">🐍 Snake</option>
+                <option value="guinea-pig">Guinea Pig</option>
+                <option value="ferret">Ferret</option>
+                <option value="hedgehog">🦔 Hedgehog</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+          </fieldset>
+
+          <!-- Password Settings -->
+          <fieldset class="settings-group">
+            <legend class="settings-group-title">Change Password</legend>
+
+            <div class="form-group">
+              <label class="form-label" for="settings-current-password">Current Password</label>
+              <input
+                class="form-input"
+                type="password"
+                id="settings-current-password"
+                name="current-password"
+                placeholder="••••••••"
+                autocomplete="current-password"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="settings-new-password">New Password</label>
+              <input
+                class="form-input"
+                type="password"
+                id="settings-new-password"
+                name="new-password"
+                placeholder="Min. 8 characters"
+                autocomplete="new-password"
+                minlength="8"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="settings-confirm-password">Confirm New Password</label>
+              <input
+                class="form-input"
+                type="password"
+                id="settings-confirm-password"
+                name="confirm-password"
+                placeholder="Repeat new password"
+                autocomplete="new-password"
+                minlength="8"
+              />
+            </div>
+
+          </fieldset>
+
+          <!-- Preferences -->
+          <fieldset class="settings-group">
+            <legend class="settings-group-title">Preferences</legend>
+
+            <div class="settings-toggle-row">
+              <div class="settings-toggle-info">
+                <span class="settings-toggle-label">Story expiry reminders</span>
+                <span class="settings-toggle-desc">Notify when your story has 2h left</span>
+              </div>
+              <label class="toggle-switch" aria-label="Toggle story expiry reminders">
+                <input type="checkbox" class="toggle-input" checked />
+                <span class="toggle-track" aria-hidden="true">
+                  <span class="toggle-thumb" aria-hidden="true"></span>
+                </span>
+              </label>
+            </div>
+
+            <div class="settings-toggle-row">
+              <div class="settings-toggle-info">
+                <span class="settings-toggle-label">Feed notifications</span>
+                <span class="settings-toggle-desc">Know when friends post new stories</span>
+              </div>
+              <label class="toggle-switch" aria-label="Toggle feed notifications">
+                <input type="checkbox" class="toggle-input" />
+                <span class="toggle-track" aria-hidden="true">
+                  <span class="toggle-thumb" aria-hidden="true"></span>
+                </span>
+              </label>
+            </div>
+
+          </fieldset>
+
+          <button type="submit" class="btn btn-accent btn-full btn-lg" aria-label="Save all changes">
+            Save Changes
+          </button>
+
+          <!-- Danger Zone -->
+          <details class="danger-zone" aria-label="Danger zone">
+            <summary class="danger-zone-title" aria-expanded="false">Danger Zone</summary>
+            <div class="danger-zone-body">
+              <p class="danger-desc">These actions are permanent and cannot be undone.</p>
+              <button type="button" class="btn btn-danger btn-full">Delete All My Stories</button>
+              <button type="button" class="btn btn-danger-outline btn-full">Delete Account</button>
+            </div>
+          </details>
+
+        </form>
+
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         SECTION 8: 404 NOT FOUND
+    ──────────────────────────────────────────── -->
+    <section id="notfound" class="section section-404" aria-label="Page not found">
+      <div class="container container-narrow">
+        <div class="notfound-card">
+          <div class="notfound-emoji" aria-hidden="true">🐾</div>
+          <h2 class="notfound-title">Oops! Page Not Found</h2>
+          <p class="notfound-desc">Looks like this page wandered off like an unsupervised pet. Let's get you back home.</p>
+          <a href="#home" class="btn btn-accent btn-lg">Back to Home</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER (landing only)
+  ══════════════════════════════════════════════ -->
+  <footer class="app-footer" id="app-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-logo" aria-label="PetStory">🐾 PetStory</span>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="#home" class="footer-link">Home</a>
+          <a href="#login" class="footer-link">Login</a>
+          <a href="#signup" class="footer-link">Sign Up</a>
+        </nav>
+        <p class="footer-copy">&copy; 2025 PetStory. Stories disappear. Memories don't.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Minimal SPA routing via hash ───────────────────────────────────────
+    (function () {
+      const sections = document.querySelectorAll('.section');
+      const appHeader = document.getElementById('app-header');
+      const appFooter = document.getElementById('app-footer');
+      const feedSections = ['feed', 'create', 'profile', 'settings'];
+      const noHeaderSections = ['home', 'login', 'signup', 'notfound'];
+
+      function showSection(hash) {
+        const id = hash.replace('#', '') || 'home';
+        let found = false;
+        sections.forEach(function (sec) {
+          if (sec.id === id) {
+            sec.classList.add('active');
+            sec.removeAttribute('aria-hidden');
+            found = true;
+          } else {
+            sec.classList.remove('active');
+            sec.setAttribute('aria-hidden', 'true');
+          }
+        });
+        if (!found) {
+          const nf = document.getElementById('notfound');
+          if (nf) { nf.classList.add('active'); nf.removeAttribute('aria-hidden'); }
+        }
+        const inFeed = feedSections.indexOf(id) !== -1;
+        appHeader.classList.toggle('visible', inFeed);
+        appFooter.classList.toggle('visible', !inFeed);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      window.addEventListener('hashchange', function () {
+        showSection(window.location.hash);
+      });
+      showSection(window.location.hash);
+
+      // ─── Character counter ─────────────────────────────────────────────
+      const captionArea = document.getElementById('story-caption');
+      const charCount = document.getElementById('char-count');
+      if (captionArea && charCount) {
+        captionArea.addEventListener('input', function () {
+          charCount.textContent = captionArea.value.length;
+        });
+      }
+
+      // ─── Upload zone interaction ───────────────────────────────────────
+      const uploadZone = document.getElementById('upload-zone');
+      const fileInput = document.getElementById('story-image');
+      const preview = document.getElementById('image-preview');
+
+      if (uploadZone && fileInput) {
+        uploadZone.addEventListener('click', function () { fileInput.click(); });
+        uploadZone.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+        });
+        uploadZone.addEventListener('dragover', function (e) {
+          e.preventDefault();
+          uploadZone.classList.add('drag-over');
+        });
+        uploadZone.addEventListener('dragleave', function () {
+          uploadZone.classList.remove('drag-over');
+        });
+        uploadZone.addEventListener('drop', function (e) {
+          e.preventDefault();
+          uploadZone.classList.remove('drag-over');
+          const file = e.dataTransfer.files[0];
+          if (file) { handlePreview(file); }
+        });
+        fileInput.addEventListener('change', function () {
+          if (fileInput.files[0]) { handlePreview(fileInput.files[0]); }
+        });
+      }
+
+      function handlePreview(file) {
+        if (!file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview of uploaded pet photo" class="preview-img" />';
+          preview.classList.add('has-image');
+        };
+        reader.readAsDataURL(file);
+      }
+    }());
+  </script>
 
 </body>
 </html>
