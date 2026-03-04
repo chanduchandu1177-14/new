@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join PawSnap | Create Your Pet's Profile</title>
+    <link rel="stylesheet" href="signup.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="signup-wrapper">
+        <header class="logo-container">
+            <a href="index.html" class="logo">Paw<span>Snap</span></a>
+        </header>
+
+        <main class="signup-card">
+            <div class="card-header">
+                <h1>Create Account</h1>
+                <p>Start sharing your pet's daily adventures.</p>
+            </div>
+
+            <form class="signup-form" action="#" method="POST">
+                <div class="form-group">
+                    <label for="username">Owner Username</label>
+                    <input type="text" id="username" name="username" placeholder="e.g. BarkLover99" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="hello@example.com" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pet-name">Pet Name</label>
+                        <input type="text" id="pet-name" name="pet-name" placeholder="Buddy" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pet-type">Pet Type</label>
+                        <select id="pet-type" name="pet-type" required>
+                            <option value="" disabled selected>Select...</option>
+                            <option value="dog">Dog</option>
+                            <option value="cat">Cat</option>
+                            <option value="bird">Bird</option>
+                            <option value="rabbit">Rabbit</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" minlength="8" required>
+                    <small class="helper-text">At least 8 characters required.</small>
+                </div>
+
+                <button type="submit" class="btn-submit">Create Profile</button>
+            </form>
+
+            <footer class="card-footer">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+            </footer>
+        </main>
+    </div>
+
+</body>
+</html>
