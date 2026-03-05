@@ -3,886 +3,2024 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="PetStory — Share your pet's fleeting moments. 24-hour disappearing stories for pet lovers." />
-  <meta name="theme-color" content="#0f0f14" />
-  <title>PetStory — Your Pet's 24-Hour Moments</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="PetWorld — Share your pet's best moments. Stories disappear after 24 hours." />
+  <meta name="theme-color" content="#ff7a3d" />
+
+  <!-- Open Graph -->
+  <meta property="og:title"       content="PetWorld 🐾" />
+  <meta property="og:description" content="A social platform built only for pets." />
+  <meta property="og:type"        content="website" />
+
+  <title>PetWorld 🐾 — Pet Stories</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+
+  <!-- Global stylesheet (no inline CSS anywhere in this file) -->
+  <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
 
-  <!-- ═══════════════════════════════════════════
-       GLOBAL HEADER / NAV (feed-only visible)
-  ══════════════════════════════════════════════ -->
-  <header class="app-header" id="app-header" aria-label="Application header">
-    <nav class="app-nav" aria-label="Main navigation">
-      <a href="#feed" class="nav-logo" aria-label="PetStory home">
-        <span class="nav-logo-icon" aria-hidden="true">🐾</span>
-        <span class="nav-logo-text">PetStory</span>
-      </a>
-      <div class="nav-actions">
-        <a href="#create" class="btn btn-accent btn-sm" aria-label="Add new story">
-          <span aria-hidden="true">+</span> Add Story
-        </a>
-        <a href="#profile" class="nav-avatar" aria-label="View profile">
-          <span class="avatar-placeholder" aria-hidden="true">🐶</span>
-        </a>
-      </div>
+  <!-- ============================================================
+       TOPBAR — shown on public pages (landing / login / signup)
+       Toggled by JS based on auth state
+       ============================================================ -->
+  <header class="topbar" id="topbar" role="banner">
+    <div class="topbar__inner">
+      <button class="topbar__logo" data-nav="landing-page" aria-label="PetWorld home">
+        <span class="topbar__logo-icon" aria-hidden="true">🐾</span>
+        <span class="topbar__logo-text">PetWorld</span>
+      </button>
+      <nav class="topbar__nav" aria-label="Public navigation">
+        <button class="btn btn--ghost btn--sm" data-nav="login-page">Login</button>
+        <button class="btn btn--accent btn--sm" data-nav="signup-page">Sign Up</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       NAVBAR — shown on authenticated pages
+       Toggled by JS after login
+       ============================================================ -->
+  <header class="navbar" id="navbar" role="banner" hidden>
+    <div class="navbar__inner">
+
+      <!-- Logo -->
+      <button class="navbar__logo" data-nav="feed-page" aria-label="PetWorld feed">
+        <span class="navbar__logo-icon" aria-hidden="true">🐾</span>
+        <span class="navbar__logo-text">PetWorld</span>
+      </button>
+
+      <!-- Desktop links -->
+      <nav class="navbar__links" aria-label="App navigation">
+        <button class="navbar__btn" data-nav="feed-page" aria-label="Feed">
+          <span class="navbar__btn-icon" aria-hidden="true">🏠</span>
+          <span class="navbar__btn-label">Feed</span>
+        </button>
+        <button class="navbar__btn navbar__btn--create" data-nav="create-story-page" aria-label="Create story">
+          <span class="navbar__btn-icon" aria-hidden="true">＋</span>
+          <span class="navbar__btn-label">Create</span>
+        </button>
+        <button class="navbar__btn" data-nav="profile-page" aria-label="My profile">
+          <span class="navbar__btn-icon" aria-hidden="true">🐶</span>
+          <span class="navbar__btn-label">Profile</span>
+        </button>
+        <button class="navbar__btn" data-nav="settings-page" aria-label="Settings">
+          <span class="navbar__btn-icon" aria-hidden="true">⚙</span>
+          <span class="navbar__btn-label">Settings</span>
+        </button>
+        <button class="navbar__btn navbar__btn--logout" id="navLogoutBtn" aria-label="Log out">
+          <span class="navbar__btn-icon" aria-hidden="true">↩</span>
+          <span class="navbar__btn-label">Logout</span>
+        </button>
+      </nav>
+
+      <!-- Hamburger (mobile) -->
+      <button
+        class="navbar__hamburger"
+        id="navHamburger"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="navDrawer"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile drawer -->
+    <nav class="navbar__drawer" id="navDrawer" aria-label="Mobile navigation" hidden>
+      <button class="navbar__drawer-btn"                  data-nav="feed-page">🏠 Feed</button>
+      <button class="navbar__drawer-btn navbar__drawer-btn--create" data-nav="create-story-page">＋ Create Story</button>
+      <button class="navbar__drawer-btn"                  data-nav="profile-page">🐶 Profile</button>
+      <button class="navbar__drawer-btn"                  data-nav="settings-page">⚙ Settings</button>
+      <button class="navbar__drawer-btn navbar__drawer-btn--logout" id="drawerLogoutBtn">↩ Logout</button>
     </nav>
   </header>
 
-  <!-- ═══════════════════════════════════════════
-       MAIN CONTENT AREA
-  ══════════════════════════════════════════════ -->
-  <main id="main-content">
 
-    <!-- ─────────────────────────────────────────
-         SECTION 1: LANDING / HOME
-    ──────────────────────────────────────────── -->
-    <section id="home" class="section section-landing active" aria-label="Landing page">
+  <!-- ============================================================
+       MAIN — all SPA sections live here
+       ============================================================ -->
+  <main id="main" role="main">
 
-      <div class="landing-bg-orbs" aria-hidden="true">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-      </div>
+    <!-- ========================================================
+         1. LANDING PAGE
+         ======================================================== -->
+    <section class="page" id="landing-page" aria-label="Welcome to PetWorld">
 
-      <div class="container">
+      <div class="landing">
 
         <!-- Hero -->
-        <div class="landing-hero">
-          <div class="landing-logo" aria-label="PetStory logo">
-            <span class="logo-paw" aria-hidden="true">🐾</span>
-            <span class="logo-wordmark">PetStory</span>
-          </div>
-          <h1 class="landing-headline">Share Your<br /><em>Pet's Moments</em></h1>
-          <p class="landing-subheadline">
-            Capture your furry, feathered, and scaly companions in 24-hour disappearing stories. Beautiful. Fleeting. Unforgettable.
+        <div class="landing__hero">
+          <span class="landing__badge" aria-hidden="true">🐾 Only for pets</span>
+          <h1 class="landing__headline">
+            Share Your Pet's<br />
+            <span class="landing__headline-accent">Moments</span>
+          </h1>
+          <p class="landing__subheading">
+            Post your pet's best moments. Every story disappears<br />
+            after 24 hours. No noise — just pure pet love.
           </p>
-          <div class="landing-cta-group">
-            <a href="#signup" class="btn btn-accent btn-lg">Get Started Free</a>
-            <a href="#login" class="btn btn-ghost btn-lg">Sign In</a>
+          <div class="landing__cta">
+            <button class="btn btn--accent btn--lg" data-nav="signup-page">Get Started Free</button>
+            <button class="btn btn--ghost btn--lg"  data-nav="login-page">Sign In</button>
           </div>
         </div>
 
-        <!-- Feature Cards -->
-        <div class="feature-grid" role="list" aria-label="Platform features">
-
-          <article class="feature-card" role="listitem">
-            <div class="feature-icon" aria-hidden="true">⏳</div>
-            <h3 class="feature-title">24-Hour Stories</h3>
-            <p class="feature-desc">Every story vanishes after 24 hours. Keep your feed fresh, spontaneous, and always in the moment.</p>
-          </article>
-
-          <article class="feature-card" role="listitem">
-            <div class="feature-icon" aria-hidden="true">📸</div>
-            <h3 class="feature-title">Image + Caption Only</h3>
-            <p class="feature-desc">No clutter. Just one beautiful photo and a caption. Pure, distraction-free pet moments.</p>
-          </article>
-
-          <article class="feature-card" role="listitem">
-            <div class="feature-icon" aria-hidden="true">🐾</div>
-            <h3 class="feature-title">Pet Lovers Community</h3>
-            <p class="feature-desc">Connect with thousands of passionate pet owners who understand the joy of animal companionship.</p>
-          </article>
-
-        </div>
-
-        <!-- Trust Bar -->
-        <div class="trust-bar" aria-label="Community statistics">
-          <div class="trust-stat">
-            <span class="trust-number">47K+</span>
-            <span class="trust-label">Pet Owners</span>
+        <!-- Feature cards -->
+        <div class="landing__features" role="list">
+          <div class="feature-card" role="listitem">
+            <div class="feature-card__icon" aria-hidden="true">⏳</div>
+            <h3 class="feature-card__title">24-Hour Stories</h3>
+            <p class="feature-card__desc">
+              Every post vanishes automatically. Fresh content every single day.
+            </p>
           </div>
-          <div class="trust-divider" aria-hidden="true"></div>
-          <div class="trust-stat">
-            <span class="trust-number">230K+</span>
-            <span class="trust-label">Stories Shared</span>
+          <div class="feature-card" role="listitem">
+            <div class="feature-card__icon" aria-hidden="true">📸</div>
+            <h3 class="feature-card__title">Image + Caption Only</h3>
+            <p class="feature-card__desc">
+              Simple, focused sharing. Just the image and the story that matters.
+            </p>
           </div>
-          <div class="trust-divider" aria-hidden="true"></div>
-          <div class="trust-stat">
-            <span class="trust-number">12+</span>
-            <span class="trust-label">Pet Types</span>
+          <div class="feature-card" role="listitem">
+            <div class="feature-card__icon" aria-hidden="true">🐶</div>
+            <h3 class="feature-card__title">Pet Lovers Community</h3>
+            <p class="feature-card__desc">
+              Connect with people who adore animals as much as you do.
+            </p>
           </div>
         </div>
 
-      </div>
-    </section>
+        <!-- Preview strip -->
+        <div class="landing__preview" aria-label="Story previews">
+          <p class="landing__preview-label">Trending right now</p>
+          <div class="landing__preview-strip">
+            <div class="preview-bubble">
+              <img src="https://picsum.photos/seed/dog1/160/220" alt="Dog story" class="preview-bubble__img" loading="lazy" />
+              <span class="preview-bubble__badge">19h left</span>
+            </div>
+            <div class="preview-bubble">
+              <img src="https://picsum.photos/seed/cat2/160/220" alt="Cat story" class="preview-bubble__img" loading="lazy" />
+              <span class="preview-bubble__badge">8h left</span>
+            </div>
+            <div class="preview-bubble">
+              <img src="https://picsum.photos/seed/rabbit3/160/220" alt="Rabbit story" class="preview-bubble__img" loading="lazy" />
+              <span class="preview-bubble__badge">3h left</span>
+            </div>
+            <div class="preview-bubble">
+              <img src="https://picsum.photos/seed/bird4/160/220" alt="Bird story" class="preview-bubble__img" loading="lazy" />
+              <span class="preview-bubble__badge">22h left</span>
+            </div>
+          </div>
+        </div>
 
-    <!-- ─────────────────────────────────────────
-         SECTION 2: LOGIN
-    ──────────────────────────────────────────── -->
-    <section id="login" class="section section-auth" aria-label="Login page">
-      <div class="container container-narrow">
+      </div><!-- /landing -->
 
+      <footer class="landing__footer" role="contentinfo">
+        <p>&copy; 2025 PetWorld — Built for pet lovers 🐾</p>
+      </footer>
+
+    </section><!-- /landing-page -->
+
+
+    <!-- ========================================================
+         2. LOGIN PAGE
+         ======================================================== -->
+    <section class="page" id="login-page" aria-label="Sign in to PetWorld" hidden>
+
+      <div class="auth-wrap">
         <div class="auth-card">
-          <div class="auth-header">
-            <a href="#home" class="auth-logo" aria-label="Back to home">
-              <span aria-hidden="true">🐾</span> PetStory
-            </a>
-            <h2 class="auth-title">Welcome back</h2>
-            <p class="auth-subtitle">Sign in to see what your pets' friends are up to</p>
+
+          <div class="auth-card__header">
+            <div class="auth-card__logo" aria-hidden="true">🐾</div>
+            <h1 class="auth-card__title">Welcome back</h1>
+            <p class="auth-card__subtitle">Sign in to see the latest pet stories</p>
           </div>
 
-          <form class="auth-form" id="login-form" novalidate aria-label="Login form">
+          <form class="auth-form" id="loginForm" novalidate autocomplete="on">
 
             <div class="form-group">
-              <label class="form-label" for="login-email">Email address</label>
+              <label class="form-label" for="loginEmail">Email address</label>
               <input
                 class="form-input"
                 type="email"
-                id="login-email"
+                id="loginEmail"
                 name="email"
                 placeholder="you@example.com"
                 autocomplete="email"
+                inputmode="email"
+                maxlength="254"
                 required
+                aria-describedby="loginEmailError"
               />
+              <span class="form-error" id="loginEmailError" role="alert" aria-live="polite"></span>
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="login-password">Password</label>
-              <div class="input-wrapper">
+              <label class="form-label" for="loginPassword">Password</label>
+              <div class="form-input-group">
                 <input
                   class="form-input"
                   type="password"
-                  id="login-password"
+                  id="loginPassword"
                   name="password"
-                  placeholder="••••••••"
+                  placeholder="Your password"
                   autocomplete="current-password"
+                  maxlength="128"
                   required
+                  aria-describedby="loginPasswordError"
                 />
+                <button
+                  type="button"
+                  class="form-eye-btn"
+                  data-toggle-password="loginPassword"
+                  aria-label="Show password"
+                >👁</button>
               </div>
+              <span class="form-error" id="loginPasswordError" role="alert" aria-live="polite"></span>
             </div>
 
-            <a href="#feed" class="btn btn-accent btn-full btn-lg" role="button" aria-label="Sign in to your account">
-              Sign In
-            </a>
+            <!-- API error banner -->
+            <div class="form-api-error" id="loginApiError" role="alert" aria-live="assertive" hidden>
+              <span class="form-api-error__icon" aria-hidden="true">⚠️</span>
+              <span id="loginApiErrorMsg">Something went wrong.</span>
+            </div>
+
+            <button type="submit" class="btn btn--accent btn--full" id="loginSubmitBtn">
+              <span class="btn__spinner" id="loginSpinner" aria-hidden="true" hidden></span>
+              <span id="loginBtnText">Sign In</span>
+            </button>
 
           </form>
 
-          <p class="auth-switch">
-            Don't have an account? <a href="#signup" class="auth-link">Create one free</a>
+          <p class="auth-card__switch">
+            Don&rsquo;t have an account?
+            <button class="link-btn" data-nav="signup-page">Sign up free</button>
           </p>
+
         </div>
-
       </div>
-    </section>
 
-    <!-- ─────────────────────────────────────────
-         SECTION 3: SIGN UP
-    ──────────────────────────────────────────── -->
-    <section id="signup" class="section section-auth" aria-label="Sign up page">
-      <div class="container container-narrow">
+    </section><!-- /login-page -->
 
+
+    <!-- ========================================================
+         3. SIGNUP PAGE
+         ======================================================== -->
+    <section class="page" id="signup-page" aria-label="Create a PetWorld account" hidden>
+
+      <div class="auth-wrap">
         <div class="auth-card">
-          <div class="auth-header">
-            <a href="#home" class="auth-logo" aria-label="Back to home">
-              <span aria-hidden="true">🐾</span> PetStory
-            </a>
-            <h2 class="auth-title">Create your account</h2>
-            <p class="auth-subtitle">Join thousands of pet lovers sharing daily moments</p>
+
+          <div class="auth-card__header">
+            <div class="auth-card__logo" aria-hidden="true">🐾</div>
+            <h1 class="auth-card__title">Create account</h1>
+            <p class="auth-card__subtitle">Join the pet lovers community today</p>
           </div>
 
-          <form class="auth-form" id="signup-form" novalidate aria-label="Sign up form">
+          <form class="auth-form" id="signupForm" novalidate autocomplete="on">
 
             <div class="form-group">
-              <label class="form-label" for="signup-username">Username</label>
+              <label class="form-label" for="signupUsername">Username</label>
               <input
                 class="form-input"
                 type="text"
-                id="signup-username"
+                id="signupUsername"
                 name="username"
-                placeholder="@yourhandle"
+                placeholder="rocky_the_lab"
                 autocomplete="username"
+                maxlength="30"
                 required
-                minlength="3"
+                aria-describedby="signupUsernameError"
               />
+              <span class="form-error" id="signupUsernameError" role="alert" aria-live="polite"></span>
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="signup-email">Email address</label>
+              <label class="form-label" for="signupEmail">Email address</label>
               <input
                 class="form-input"
                 type="email"
-                id="signup-email"
+                id="signupEmail"
                 name="email"
                 placeholder="you@example.com"
                 autocomplete="email"
+                inputmode="email"
+                maxlength="254"
                 required
+                aria-describedby="signupEmailError"
               />
+              <span class="form-error" id="signupEmailError" role="alert" aria-live="polite"></span>
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="signup-password">Password</label>
-              <input
-                class="form-input"
-                type="password"
-                id="signup-password"
-                name="password"
-                placeholder="Min. 8 characters"
-                autocomplete="new-password"
-                required
-                minlength="8"
-              />
+              <label class="form-label" for="signupPassword">Password</label>
+              <div class="form-input-group">
+                <input
+                  class="form-input"
+                  type="password"
+                  id="signupPassword"
+                  name="password"
+                  placeholder="Min. 8 characters"
+                  autocomplete="new-password"
+                  maxlength="128"
+                  required
+                  aria-describedby="signupPasswordError"
+                />
+                <button
+                  type="button"
+                  class="form-eye-btn"
+                  data-toggle-password="signupPassword"
+                  aria-label="Show password"
+                >👁</button>
+              </div>
+              <!-- Password strength indicator -->
+              <div class="pw-strength" id="pwStrength" aria-hidden="true" hidden>
+                <div class="pw-strength__bar">
+                  <div class="pw-strength__fill" id="pwStrengthFill"></div>
+                </div>
+                <span class="pw-strength__label" id="pwStrengthLabel"></span>
+              </div>
+              <span class="form-error" id="signupPasswordError" role="alert" aria-live="polite"></span>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label" for="signup-petname">Pet's Name</label>
+                <label class="form-label" for="signupPetName">Pet name</label>
                 <input
                   class="form-input"
                   type="text"
-                  id="signup-petname"
-                  name="petname"
+                  id="signupPetName"
+                  name="petName"
                   placeholder="Buddy"
+                  maxlength="40"
                   required
+                  aria-describedby="signupPetNameError"
                 />
+                <span class="form-error" id="signupPetNameError" role="alert" aria-live="polite"></span>
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="signup-pettype">Pet Type</label>
-                <select class="form-input form-select" id="signup-pettype" name="pettype" required>
+                <label class="form-label" for="signupPetType">Pet type</label>
+                <select
+                  class="form-input form-select"
+                  id="signupPetType"
+                  name="petType"
+                  required
+                  aria-describedby="signupPetTypeError"
+                >
                   <option value="" disabled selected>Select type</option>
-                  <option value="dog">🐕 Dog</option>
-                  <option value="cat">🐈 Cat</option>
-                  <option value="rabbit">🐇 Rabbit</option>
+                  <option value="dog">🐶 Dog</option>
+                  <option value="cat">🐱 Cat</option>
                   <option value="bird">🐦 Bird</option>
-                  <option value="hamster">🐹 Hamster</option>
-                  <option value="fish">🐠 Fish</option>
-                  <option value="turtle">🐢 Turtle</option>
-                  <option value="snake">🐍 Snake</option>
-                  <option value="guinea-pig">Guinea Pig</option>
-                  <option value="ferret">Ferret</option>
-                  <option value="hedgehog">🦔 Hedgehog</option>
-                  <option value="other">Other</option>
+                  <option value="rabbit">🐰 Rabbit</option>
+                  <option value="other">🐾 Other</option>
+                </select>
+                <span class="form-error" id="signupPetTypeError" role="alert" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <!-- API error banner -->
+            <div class="form-api-error" id="signupApiError" role="alert" aria-live="assertive" hidden>
+              <span class="form-api-error__icon" aria-hidden="true">⚠️</span>
+              <span id="signupApiErrorMsg">Something went wrong.</span>
+            </div>
+
+            <button type="submit" class="btn btn--accent btn--full" id="signupSubmitBtn">
+              <span class="btn__spinner" id="signupSpinner" aria-hidden="true" hidden></span>
+              <span id="signupBtnText">Create Account</span>
+            </button>
+
+          </form>
+
+          <p class="auth-card__switch">
+            Already have an account?
+            <button class="link-btn" data-nav="login-page">Sign in</button>
+          </p>
+
+        </div>
+      </div>
+
+    </section><!-- /signup-page -->
+
+
+    <!-- ========================================================
+         4. FEED PAGE
+         ======================================================== -->
+    <section class="page page--app" id="feed-page" aria-label="Pet story feed" hidden>
+
+      <div class="feed-container">
+
+        <!-- Feed header -->
+        <div class="feed-header">
+          <h2 class="feed-header__title">Latest Stories</h2>
+          <span class="feed-header__live-badge">
+            <span class="live-dot" aria-hidden="true"></span>
+            Live
+          </span>
+        </div>
+
+        <!-- Active story avatars strip -->
+        <div class="stories-strip" aria-label="Active stories — tap to view">
+          <div class="stories-strip__scroll" id="storiesStrip">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Story cards feed -->
+        <div class="feed-cards" id="feedCards" role="feed" aria-label="Pet stories">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Empty state (shown when feed is empty) -->
+        <div class="feed-empty" id="feedEmpty" hidden>
+          <span class="feed-empty__icon" aria-hidden="true">🐾</span>
+          <h3 class="feed-empty__title">No stories yet</h3>
+          <p class="feed-empty__desc">Be the first to share your pet's moment!</p>
+          <button class="btn btn--accent" data-nav="create-story-page">Create Story</button>
+        </div>
+
+      </div>
+
+    </section><!-- /feed-page -->
+
+
+    <!-- ========================================================
+         5. CREATE STORY PAGE
+         ======================================================== -->
+    <section class="page page--app" id="create-story-page" aria-label="Create a new story" hidden>
+
+      <div class="create-container">
+
+        <div class="create-header">
+          <h2 class="create-header__title">New Story</h2>
+          <p class="create-header__subtitle">
+            Your story disappears automatically after 24 hours.
+          </p>
+        </div>
+
+        <form class="create-form" id="createStoryForm" novalidate>
+
+          <!-- Upload zone -->
+          <div
+            class="upload-zone"
+            id="uploadZone"
+            role="button"
+            tabindex="0"
+            aria-label="Upload a photo — drag and drop or click to browse"
+          >
+            <input
+              type="file"
+              id="photoInput"
+              class="upload-zone__file-input"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              aria-label="Choose a photo file"
+            />
+
+            <!-- Default prompt (hidden when preview active) -->
+            <div class="upload-zone__prompt" id="uploadPrompt">
+              <span class="upload-zone__icon" aria-hidden="true">📷</span>
+              <p class="upload-zone__text">Drag &amp; drop your pet&rsquo;s photo here</p>
+              <p class="upload-zone__sub">or <span class="upload-zone__link">browse files</span></p>
+              <p class="upload-zone__hint">JPEG, PNG, GIF, WebP &mdash; max 5 MB</p>
+            </div>
+
+            <!-- Preview (shown after file selected) -->
+            <div class="upload-zone__preview" id="uploadPreview" hidden>
+              <img id="previewImage" src="" alt="Preview of selected photo" class="upload-zone__preview-img" />
+              <button
+                type="button"
+                class="upload-zone__remove-btn"
+                id="removeImageBtn"
+                aria-label="Remove selected image"
+              >&times;</button>
+            </div>
+          </div>
+          <span class="form-error" id="uploadError" role="alert" aria-live="polite"></span>
+
+          <!-- Caption -->
+          <div class="form-group">
+            <label class="form-label" for="storyCaption">
+              Caption
+              <span class="form-label__counter">
+                <span id="captionCharCount">0</span> / 150
+              </span>
+            </label>
+            <textarea
+              class="form-input form-textarea"
+              id="storyCaption"
+              name="caption"
+              placeholder="Tell us about this moment… 🐾"
+              maxlength="150"
+              rows="3"
+              aria-describedby="captionError"
+            ></textarea>
+            <span class="form-error" id="captionError" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Expiry selector -->
+          <div class="form-group">
+            <label class="form-label" for="storyExpiry">Story duration</label>
+            <select class="form-input form-select" id="storyExpiry" name="expiry">
+              <option value="6">6 hours</option>
+              <option value="12">12 hours</option>
+              <option value="24" selected>24 hours (default)</option>
+              <option value="48">48 hours</option>
+            </select>
+          </div>
+
+          <!-- Reminder note -->
+          <div class="create-note">
+            <span class="create-note__icon" aria-hidden="true">⏳</span>
+            <span>Your story will disappear after the selected duration.</span>
+          </div>
+
+          <!-- API error -->
+          <div class="form-api-error" id="createApiError" role="alert" aria-live="assertive" hidden>
+            <span class="form-api-error__icon" aria-hidden="true">⚠️</span>
+            <span id="createApiErrorMsg">Something went wrong.</span>
+          </div>
+
+          <button type="submit" class="btn btn--accent btn--full" id="createStoryBtn">
+            <span class="btn__spinner" id="createSpinner" aria-hidden="true" hidden></span>
+            <span id="createBtnText">Post Story 🐾</span>
+          </button>
+
+        </form>
+
+      </div>
+
+    </section><!-- /create-story-page -->
+
+
+    <!-- ========================================================
+         6. PROFILE PAGE
+         ======================================================== -->
+    <section class="page page--app" id="profile-page" aria-label="My profile" hidden>
+
+      <div class="profile-container">
+
+        <!-- Profile header -->
+        <div class="profile-header">
+          <div class="profile-header__avatar-wrap">
+            <div class="profile-header__avatar" id="profileAvatarEmoji" aria-hidden="true">🐾</div>
+            <span class="profile-header__pet-badge" id="profilePetBadge" aria-hidden="true">🐶</span>
+          </div>
+          <div class="profile-header__info">
+            <h2 class="profile-header__username" id="profileUsername">@rocky_the_lab</h2>
+            <p class="profile-header__pet-line">
+              <span id="profilePetName">Buddy</span>
+              <span class="profile-header__separator" aria-hidden="true">&bull;</span>
+              <span id="profilePetType">Dog</span>
+            </p>
+            <div class="profile-header__stats">
+              <div class="profile-stat">
+                <span class="profile-stat__number" id="profileStoryCount">0</span>
+                <span class="profile-stat__label">Active</span>
+              </div>
+              <div class="profile-stat">
+                <span class="profile-stat__number" id="profileLikesTotal">0</span>
+                <span class="profile-stat__label">Likes</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn--outline btn--sm" data-nav="settings-page" aria-label="Edit profile">
+            ✏ Edit
+          </button>
+        </div>
+
+        <!-- My active stories -->
+        <section class="profile-stories" aria-labelledby="profileStoriesTitle">
+          <h3 class="profile-stories__title" id="profileStoriesTitle">Active Stories</h3>
+          <div class="profile-stories__grid" id="profileStoriesGrid">
+            <!-- Populated by JS -->
+          </div>
+          <div class="profile-stories__empty" id="profileStoriesEmpty" hidden>
+            <p class="feed-empty__desc">No active stories. Post one!</p>
+            <button class="btn btn--accent btn--sm" data-nav="create-story-page">
+              ＋ Create Story
+            </button>
+          </div>
+        </section>
+
+      </div>
+
+    </section><!-- /profile-page -->
+
+
+    <!-- ========================================================
+         7. SETTINGS PAGE
+         ======================================================== -->
+    <section class="page page--app" id="settings-page" aria-label="Account settings" hidden>
+
+      <div class="settings-container">
+
+        <div class="settings-header">
+          <h2 class="settings-header__title">Settings</h2>
+          <p class="settings-header__subtitle">Manage your account and pet details</p>
+        </div>
+
+        <form class="settings-form" id="settingsForm" novalidate>
+
+          <!-- Account section -->
+          <fieldset class="settings-section">
+            <legend class="settings-section__title">Account</legend>
+
+            <div class="form-group">
+              <label class="form-label" for="settingsUsername">Username</label>
+              <input
+                class="form-input"
+                type="text"
+                id="settingsUsername"
+                name="username"
+                placeholder="Your username"
+                autocomplete="username"
+                maxlength="30"
+                aria-describedby="settingsUsernameError"
+              />
+              <span class="form-error" id="settingsUsernameError" role="alert" aria-live="polite"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="settingsEmail">Email address</label>
+              <input
+                class="form-input"
+                type="email"
+                id="settingsEmail"
+                name="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                inputmode="email"
+                maxlength="254"
+              />
+            </div>
+
+          </fieldset>
+
+          <!-- Pet details -->
+          <fieldset class="settings-section">
+            <legend class="settings-section__title">Pet Details</legend>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="settingsPetName">Pet name</label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="settingsPetName"
+                  name="petName"
+                  placeholder="Buddy"
+                  maxlength="40"
+                  aria-describedby="settingsPetNameError"
+                />
+                <span class="form-error" id="settingsPetNameError" role="alert" aria-live="polite"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="settingsPetType">Pet type</label>
+                <select class="form-input form-select" id="settingsPetType" name="petType">
+                  <option value="dog">🐶 Dog</option>
+                  <option value="cat">🐱 Cat</option>
+                  <option value="bird">🐦 Bird</option>
+                  <option value="rabbit">🐰 Rabbit</option>
+                  <option value="other">🐾 Other</option>
                 </select>
               </div>
             </div>
 
-            <a href="#feed" class="btn btn-accent btn-full btn-lg" role="button" aria-label="Create your account">
-              Create Account
-            </a>
+          </fieldset>
 
-          </form>
+          <!-- Change password -->
+          <fieldset class="settings-section">
+            <legend class="settings-section__title">Change Password</legend>
 
-          <p class="auth-switch">
-            Already have an account? <a href="#login" class="auth-link">Sign in</a>
-          </p>
-        </div>
+            <div class="form-group">
+              <label class="form-label" for="settingsCurrentPw">Current password</label>
+              <div class="form-input-group">
+                <input
+                  class="form-input"
+                  type="password"
+                  id="settingsCurrentPw"
+                  name="currentPassword"
+                  placeholder="Your current password"
+                  autocomplete="current-password"
+                  maxlength="128"
+                />
+                <button type="button" class="form-eye-btn" data-toggle-password="settingsCurrentPw" aria-label="Show password">👁</button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="settingsNewPw">New password</label>
+                <div class="form-input-group">
+                  <input
+                    class="form-input"
+                    type="password"
+                    id="settingsNewPw"
+                    name="newPassword"
+                    placeholder="Min. 8 characters"
+                    autocomplete="new-password"
+                    maxlength="128"
+                    aria-describedby="settingsNewPwError"
+                  />
+                  <button type="button" class="form-eye-btn" data-toggle-password="settingsNewPw" aria-label="Show password">👁</button>
+                </div>
+                <span class="form-error" id="settingsNewPwError" role="alert" aria-live="polite"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="settingsConfirmPw">Confirm new password</label>
+                <div class="form-input-group">
+                  <input
+                    class="form-input"
+                    type="password"
+                    id="settingsConfirmPw"
+                    name="confirmPassword"
+                    placeholder="Repeat new password"
+                    autocomplete="new-password"
+                    maxlength="128"
+                    aria-describedby="settingsConfirmPwError"
+                  />
+                  <button type="button" class="form-eye-btn" data-toggle-password="settingsConfirmPw" aria-label="Show password">👁</button>
+                </div>
+                <span class="form-error" id="settingsConfirmPwError" role="alert" aria-live="polite"></span>
+              </div>
+            </div>
+
+          </fieldset>
+
+          <!-- Feedback banners -->
+          <div class="form-api-error" id="settingsApiError" role="alert" aria-live="assertive" hidden>
+            <span class="form-api-error__icon" aria-hidden="true">⚠️</span>
+            <span id="settingsApiErrorMsg">Something went wrong.</span>
+          </div>
+          <div class="settings-success" id="settingsSuccess" hidden>
+            ✅ Settings saved successfully!
+          </div>
+
+          <div class="settings-actions">
+            <button type="submit" class="btn btn--accent btn--full" id="settingsSaveBtn">
+              <span class="btn__spinner" id="settingsSpinner" aria-hidden="true" hidden></span>
+              <span id="settingsBtnText">Save Changes</span>
+            </button>
+            <button type="button" class="btn btn--danger btn--full" id="settingsLogoutBtn">
+              ↩ Log Out
+            </button>
+          </div>
+
+        </form>
 
       </div>
-    </section>
 
-    <!-- ─────────────────────────────────────────
-         SECTION 4: FEED
-    ──────────────────────────────────────────── -->
-    <section id="feed" class="section section-feed" aria-label="Story feed">
-      <div class="container">
+    </section><!-- /settings-page -->
 
-        <!-- Stories Ring Bar -->
-        <div class="stories-ring-bar" role="list" aria-label="Active stories">
-          <div class="ring-story active-story" role="listitem" aria-label="Your story">
-            <div class="ring-avatar">
-              <span aria-hidden="true">🐶</span>
-            </div>
-            <span class="ring-label">Your Story</span>
-          </div>
-          <div class="ring-story" role="listitem" aria-label="Whiskers story">
-            <div class="ring-avatar">
-              <span aria-hidden="true">🐈</span>
-            </div>
-            <span class="ring-label">Whiskers</span>
-          </div>
-          <div class="ring-story" role="listitem" aria-label="Coco story">
-            <div class="ring-avatar">
-              <span aria-hidden="true">🦜</span>
-            </div>
-            <span class="ring-label">Coco</span>
-          </div>
-          <div class="ring-story" role="listitem" aria-label="Rex story">
-            <div class="ring-avatar">
-              <span aria-hidden="true">🐕</span>
-            </div>
-            <span class="ring-label">Rex</span>
-          </div>
-          <div class="ring-story" role="listitem" aria-label="Nibbles story">
-            <div class="ring-avatar">
-              <span aria-hidden="true">🐇</span>
-            </div>
-            <span class="ring-label">Nibbles</span>
-          </div>
-          <div class="ring-story" role="listitem" aria-label="Nemo story">
-            <div class="ring-avatar">
-              <span aria-hidden="true">🐠</span>
-            </div>
-            <span class="ring-label">Nemo</span>
-          </div>
-        </div>
 
-        <!-- Story Cards -->
-        <div class="feed-stories" role="feed" aria-label="Pet stories">
+    <!-- ========================================================
+         8. 404 PAGE
+         ======================================================== -->
+    <section class="page" id="notfound-page" aria-label="Page not found" hidden>
 
-          <!-- Story Card 1 -->
-          <article class="story-card" aria-label="Story by @goldenmamakai">
-            <header class="story-card-header">
-              <div class="story-author">
-                <div class="story-avatar" aria-hidden="true">🐕</div>
-                <div class="story-meta">
-                  <span class="story-petname">Kai</span>
-                  <span class="story-username">@goldenmamakai</span>
-                </div>
-              </div>
-              <div class="story-badge" aria-label="17 hours remaining">
-                <span class="badge-dot" aria-hidden="true"></span>
-                17h left
-              </div>
-            </header>
-
-            <div class="story-image-wrap" aria-label="Pet photo">
-              <div class="story-image-placeholder story-img-1" role="img" aria-label="Golden retriever playing in autumn leaves">
-                <div class="img-placeholder-content">
-                  <span class="img-placeholder-icon" aria-hidden="true">🐕</span>
-                  <span class="img-placeholder-text">Golden Retriever</span>
-                </div>
-              </div>
-              <div class="story-image-overlay" aria-hidden="true"></div>
-            </div>
-
-            <footer class="story-card-footer">
-              <p class="story-caption">Kai discovered leaf piles are basically giant toys. Spent 45 minutes doing zoomies through every pile in the park 🍂✨</p>
-              <div class="story-expires" aria-live="polite">
-                <span class="expires-icon" aria-hidden="true">⏱</span>
-                <span>Expires in 17 hours</span>
-              </div>
-            </footer>
-          </article>
-
-          <!-- Story Card 2 -->
-          <article class="story-card" aria-label="Story by @whiskersluna">
-            <header class="story-card-header">
-              <div class="story-author">
-                <div class="story-avatar" aria-hidden="true">🐈</div>
-                <div class="story-meta">
-                  <span class="story-petname">Luna</span>
-                  <span class="story-username">@whiskersluna</span>
-                </div>
-              </div>
-              <div class="story-badge story-badge-urgent" aria-label="3 hours remaining">
-                <span class="badge-dot" aria-hidden="true"></span>
-                3h left
-              </div>
-            </header>
-
-            <div class="story-image-wrap" aria-label="Pet photo">
-              <div class="story-image-placeholder story-img-2" role="img" aria-label="Cat sleeping in a sunbeam">
-                <div class="img-placeholder-content">
-                  <span class="img-placeholder-icon" aria-hidden="true">🐈</span>
-                  <span class="img-placeholder-text">Tabby Cat</span>
-                </div>
-              </div>
-              <div class="story-image-overlay" aria-hidden="true"></div>
-            </div>
-
-            <footer class="story-card-footer">
-              <p class="story-caption">Found the perfect sunbeam at exactly 2:14pm. Luna has claimed this spot indefinitely. Do not disturb 🌞😴</p>
-              <div class="story-expires story-expires-urgent" aria-live="polite">
-                <span class="expires-icon" aria-hidden="true">⚠️</span>
-                <span>Expiring soon — 3 hours left</span>
-              </div>
-            </footer>
-          </article>
-
-          <!-- Story Card 3 -->
-          <article class="story-card" aria-label="Story by @parrotdad_marco">
-            <header class="story-card-header">
-              <div class="story-author">
-                <div class="story-avatar" aria-hidden="true">🦜</div>
-                <div class="story-meta">
-                  <span class="story-petname">Coco</span>
-                  <span class="story-username">@parrotdad_marco</span>
-                </div>
-              </div>
-              <div class="story-badge" aria-label="21 hours remaining">
-                <span class="badge-dot" aria-hidden="true"></span>
-                21h left
-              </div>
-            </header>
-
-            <div class="story-image-wrap" aria-label="Pet photo">
-              <div class="story-image-placeholder story-img-3" role="img" aria-label="Colorful parrot on a perch">
-                <div class="img-placeholder-content">
-                  <span class="img-placeholder-icon" aria-hidden="true">🦜</span>
-                  <span class="img-placeholder-text">African Grey Parrot</span>
-                </div>
-              </div>
-              <div class="story-image-overlay" aria-hidden="true"></div>
-            </div>
-
-            <footer class="story-card-footer">
-              <p class="story-caption">Coco learned to say "good morning" today but only says it at 11pm. Peak chaos energy from this bird 🦜💚</p>
-              <div class="story-expires" aria-live="polite">
-                <span class="expires-icon" aria-hidden="true">⏱</span>
-                <span>Expires in 21 hours</span>
-              </div>
-            </footer>
-          </article>
-
-        </div>
-
-        <!-- Load More -->
-        <div class="feed-end">
-          <p class="feed-end-text">You've seen all active stories.</p>
-          <a href="#create" class="btn btn-ghost btn-sm">Be the first to post tomorrow ✨</a>
-        </div>
-
+      <div class="notfound">
+        <span class="notfound__emoji" aria-hidden="true">🐾</span>
+        <h1 class="notfound__code">404</h1>
+        <h2 class="notfound__title">Oops! Page Not Found</h2>
+        <p class="notfound__desc">
+          Looks like this page ran off like a dog chasing a squirrel.
+        </p>
+        <button class="btn btn--accent btn--lg" data-nav="landing-page">
+          Go Back Home
+        </button>
       </div>
-    </section>
 
-    <!-- ─────────────────────────────────────────
-         SECTION 5: CREATE STORY
-    ──────────────────────────────────────────── -->
-    <section id="create" class="section section-create" aria-label="Create story page">
-      <div class="container container-narrow">
+    </section><!-- /notfound-page -->
 
-        <div class="page-header">
-          <a href="#feed" class="back-btn" aria-label="Back to feed">
-            <span aria-hidden="true">←</span>
-          </a>
-          <h2 class="page-title">New Story</h2>
-          <span class="page-header-spacer" aria-hidden="true"></span>
+  </main><!-- /main -->
+
+
+  <!-- ============================================================
+       STORY VIEWER MODAL
+       ============================================================ -->
+  <div
+    class="story-modal"
+    id="storyModal"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Story viewer"
+    hidden
+  >
+    <div class="story-modal__backdrop" id="storyModalBackdrop"></div>
+    <div class="story-modal__panel">
+
+      <!-- Progress bar -->
+      <div class="story-modal__progress" aria-hidden="true">
+        <div class="story-modal__progress-fill" id="storyProgressFill"></div>
+      </div>
+
+      <!-- Close -->
+      <button
+        class="story-modal__close"
+        id="storyModalClose"
+        aria-label="Close story"
+      >&times;</button>
+
+      <!-- Image -->
+      <img
+        class="story-modal__image"
+        id="storyModalImage"
+        src=""
+        alt=""
+        loading="eager"
+      />
+
+      <!-- Info overlay -->
+      <div class="story-modal__info">
+        <div class="story-modal__user">
+          <span class="story-modal__user-avatar" id="storyModalAvatar" aria-hidden="true"></span>
+          <div class="story-modal__user-text">
+            <strong id="storyModalUsername"></strong>
+            <span class="story-modal__pet-tag" id="storyModalPetTag"></span>
+          </div>
         </div>
+        <p class="story-modal__caption" id="storyModalCaption"></p>
+        <span class="story-modal__time-badge" id="storyModalTime"></span>
+      </div>
 
-        <form class="create-form" id="create-form" novalidate aria-label="Create story form">
+    </div>
+  </div>
 
-          <!-- Upload Zone -->
-          <div class="upload-zone" id="upload-zone" role="button" tabindex="0" aria-label="Upload pet photo. Click or drag and drop.">
-            <div class="upload-zone-inner">
-              <div class="upload-icon" aria-hidden="true">📷</div>
-              <p class="upload-title">Drop your pet photo here</p>
-              <p class="upload-hint">or click to browse</p>
-              <p class="upload-spec">JPG, PNG, WEBP — Max 10MB</p>
-            </div>
-            <input
-              type="file"
-              id="story-image"
-              name="image"
-              accept="image/*"
-              class="upload-input visually-hidden"
-              aria-label="Choose image file"
+
+  <!-- ============================================================
+       TOAST NOTIFICATIONS
+       ============================================================ -->
+  <div id="toastRegion" aria-live="polite" aria-atomic="true" class="toast-region"></div>
+
+
+  <!-- ============================================================
+       JAVASCRIPT — Vanilla SPA Engine
+       No frameworks. No external dependencies.
+       ============================================================ -->
+  <script>
+  (() => {
+    'use strict';
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 0 — HTTPS ENFORCEMENT
+    ───────────────────────────────────────────────────────────── */
+    if (
+      location.protocol === 'http:' &&
+      location.hostname !== 'localhost' &&
+      location.hostname !== '127.0.0.1'
+    ) {
+      location.replace('https:' + location.href.slice(5));
+    }
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 1 — CONFIG
+    ───────────────────────────────────────────────────────────── */
+    const API_BASE    = 'https://petsocial-api.chanduchandu1177.workers.dev';
+    const SESSION_KEY = 'petworld_token';
+    const USER_KEY    = 'petworld_user';
+
+    const ENDPOINTS = {
+      signup:      `${API_BASE}/signup`,
+      login:       `${API_BASE}/login`,
+      logout:      `${API_BASE}/logout`,
+      posts:       `${API_BASE}/posts`,
+      createPost:  `${API_BASE}/create-post`,
+      like:        `${API_BASE}/like`,
+      comment:     `${API_BASE}/comment`,
+    };
+
+    /* All page IDs in the SPA */
+    const ALL_PAGES   = [
+      'landing-page', 'login-page', 'signup-page',
+      'feed-page', 'create-story-page', 'profile-page',
+      'settings-page', 'notfound-page',
+    ];
+    const AUTHED_PAGES = new Set([
+      'feed-page', 'create-story-page', 'profile-page', 'settings-page',
+    ]);
+    const PUBLIC_PAGES = new Set([
+      'landing-page', 'login-page', 'signup-page', 'notfound-page',
+    ]);
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 2 — SESSION MANAGER
+    ───────────────────────────────────────────────────────────── */
+    const session = (() => {
+      const getToken    = () => { try { return sessionStorage.getItem(SESSION_KEY); } catch { return null; } };
+      const getUser     = () => {
+        try {
+          const raw = sessionStorage.getItem(USER_KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch { return null; }
+      };
+      const isLoggedIn  = () => Boolean(getToken());
+      const authHeader  = () => {
+        const t = getToken();
+        return t ? { Authorization: `Bearer ${t}` } : {};
+      };
+      const save = (token, user) => {
+        try {
+          sessionStorage.setItem(SESSION_KEY, token);
+          sessionStorage.setItem(USER_KEY, JSON.stringify(user ?? {}));
+        } catch (e) { console.warn('sessionStorage write failed:', e.message); }
+      };
+      const clear = () => {
+        try {
+          sessionStorage.removeItem(SESSION_KEY);
+          sessionStorage.removeItem(USER_KEY);
+        } catch { /* noop */ }
+      };
+      return { getToken, getUser, isLoggedIn, authHeader, save, clear };
+    })();
+
+    /* Expose for external use (e.g. other modules) */
+    window.PetWorld = { session };
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 3 — API LAYER
+    ───────────────────────────────────────────────────────────── */
+
+    /**
+     * Generic API fetch with auth header, timeout, and strict JSON parsing.
+     * @param {string}      url
+     * @param {RequestInit} [options]
+     * @returns {Promise<any>}
+     */
+    const apiFetch = async (url, options = {}) => {
+      const ctrl    = new AbortController();
+      const timeout = setTimeout(() => ctrl.abort(), 12000);
+      try {
+        const res = await fetch(url, {
+          ...options,
+          signal: ctrl.signal,
+          headers: {
+            'Content-Type': 'application/json',
+            ...session.authHeader(),
+            ...(options.headers ?? {}),
+          },
+        });
+
+        let data;
+        try { data = await res.json(); }
+        catch { throw new Error(`Server error (HTTP ${res.status}). Check Worker logs.`); }
+
+        if (!res.ok) throw new Error(data.error || data.message || `HTTP ${res.status}`);
+        return data;
+      } finally {
+        clearTimeout(timeout);
+      }
+    };
+
+    /* Convenience wrappers */
+    const apiLogin     = (email, password)        => apiFetch(ENDPOINTS.login,      { method: 'POST', body: JSON.stringify({ email, password }) });
+    const apiSignup    = (payload)                => apiFetch(ENDPOINTS.signup,     { method: 'POST', body: JSON.stringify(payload) });
+    const apiLogout    = ()                       => apiFetch(ENDPOINTS.logout,     { method: 'POST' });
+    const apiFetchFeed = ()                       => apiFetch(ENDPOINTS.posts);
+    const apiLike      = (post_id)                => apiFetch(ENDPOINTS.like,       { method: 'POST', body: JSON.stringify({ post_id }) });
+    const apiComment   = (post_id, comment)       => apiFetch(ENDPOINTS.comment,    { method: 'POST', body: JSON.stringify({ post_id, comment }) });
+    const apiCreate    = (image_url, caption, expire_hours) =>
+      apiFetch(ENDPOINTS.createPost, {
+        method: 'POST',
+        body: JSON.stringify({ image_url, caption, expire_hours: Number(expire_hours) }),
+      });
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 4 — HELPERS
+    ───────────────────────────────────────────────────────────── */
+
+    /** Escape user-supplied strings for safe innerHTML injection. */
+    const esc = (str) => {
+      const map = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' };
+      return String(str ?? '').replace(/[&<>"']/g, c => map[c]);
+    };
+
+    /** Format ISO/timestamp to a relative "N ago" string. */
+    const relativeTime = (ts) => {
+      const d = new Date(ts);
+      if (isNaN(d)) return '';
+      const s = (Date.now() - d.getTime()) / 1000;
+      if (s < 60)    return 'just now';
+      if (s < 3600)  return `${Math.floor(s / 60)}m ago`;
+      if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    };
+
+    /** Map pet type string to an emoji. */
+    const petEmoji = (type) =>
+      ({ dog:'🐶', cat:'🐱', bird:'🐦', rabbit:'🐰' })[type] ?? '🐾';
+
+    /**
+     * Generate an inline-SVG data-URI avatar (no external request).
+     * @param {string} seed  — usually a username
+     */
+    const svgAvatar = (seed = '') => {
+      const palette = ['#ff7a3d','#ff4d6d','#4cc9f0','#7209b7','#3a86ff','#06d6a0'];
+      const color   = palette[
+        Math.abs([...seed].reduce((a, c) => a + c.charCodeAt(0), 0)) % palette.length
+      ];
+      const letter  = (seed[0] ?? '?').toUpperCase();
+      return (
+        `data:image/svg+xml,` +
+        `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'>` +
+        `<circle cx='24' cy='24' r='24' fill='${encodeURIComponent(color)}'/>` +
+        `<text x='50%25' y='58%25' text-anchor='middle' font-size='22' font-family='Arial' fill='%23fff'>` +
+        `${encodeURIComponent(letter)}</text></svg>`
+      );
+    };
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 5 — TOAST SYSTEM
+    ───────────────────────────────────────────────────────────── */
+
+    /**
+     * Show a toast notification.
+     * @param {string} message
+     * @param {'success'|'error'|'info'|''} [type]
+     */
+    const showToast = (message, type = '') => {
+      const region = document.getElementById('toastRegion');
+      const el     = document.createElement('div');
+      el.className = `toast${type ? ` toast--${type}` : ''}`;
+      el.setAttribute('role', 'status');
+      el.textContent = message;
+      region.appendChild(el);
+
+      /* Trigger transition on next frame */
+      requestAnimationFrame(() => el.classList.add('toast--visible'));
+
+      setTimeout(() => {
+        el.classList.remove('toast--visible');
+        el.addEventListener('transitionend', () => el.remove(), { once: true });
+      }, 3200);
+    };
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 6 — SPA ROUTER
+    ───────────────────────────────────────────────────────────── */
+
+    /**
+     * Show a page by ID. Handles auth guards and nav state.
+     * @param {string} pageId
+     */
+    const showPage = (pageId) => {
+      /* Auth guard: redirect to login if trying to access authed page */
+      if (AUTHED_PAGES.has(pageId) && !session.isLoggedIn()) {
+        _navigate('login-page');
+        showToast('Please sign in first 🐾', 'info');
+        return;
+      }
+      /* Redirect logged-in users away from auth pages */
+      if ((pageId === 'login-page' || pageId === 'signup-page') && session.isLoggedIn()) {
+        _navigate('feed-page');
+        return;
+      }
+      _navigate(pageId);
+    };
+
+    /** Internal: hide all pages, show target, update nav. */
+    const _navigate = (pageId) => {
+      const target = document.getElementById(pageId);
+      if (!target) { _navigate('notfound-page'); return; }
+
+      /* Hide all pages */
+      ALL_PAGES.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.hidden = true;
+      });
+
+      /* Show target */
+      target.hidden = false;
+
+      /* Toggle topbar vs navbar */
+      const topbar = document.getElementById('topbar');
+      const navbar = document.getElementById('navbar');
+      if (topbar) topbar.hidden =  session.isLoggedIn();
+      if (navbar) navbar.hidden = !session.isLoggedIn();
+
+      /* Update active nav button */
+      document.querySelectorAll('.navbar__btn[data-nav]').forEach(btn => {
+        btn.classList.toggle('navbar__btn--active', btn.dataset.nav === pageId);
+      });
+
+      /* Close mobile drawer */
+      _closeDrawer();
+
+      /* Scroll to top */
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      /* Update browser history */
+      history.pushState({ pageId }, '', `#${pageId}`);
+
+      /* Per-page initialisation hooks */
+      if (pageId === 'feed-page')           _initFeed();
+      if (pageId === 'profile-page')        _initProfile();
+      if (pageId === 'settings-page')       _initSettings();
+    };
+
+    /* Handle browser back/forward */
+    window.addEventListener('popstate', (e) => {
+      const id = e.state?.pageId ?? location.hash.slice(1) ?? 'landing-page';
+      showPage(id);
+    });
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 7 — GLOBAL CLICK DELEGATION
+    ───────────────────────────────────────────────────────────── */
+
+    document.addEventListener('click', (e) => {
+      /* data-nav buttons */
+      const navBtn = e.target.closest('[data-nav]');
+      if (navBtn) {
+        e.preventDefault();
+        showPage(navBtn.dataset.nav);
+        return;
+      }
+
+      /* Password visibility toggles */
+      const eyeBtn = e.target.closest('[data-toggle-password]');
+      if (eyeBtn) {
+        _togglePassword(eyeBtn);
+        return;
+      }
+    });
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 8 — MOBILE NAV DRAWER
+    ───────────────────────────────────────────────────────────── */
+
+    const _closeDrawer = () => {
+      const drawer  = document.getElementById('navDrawer');
+      const burger  = document.getElementById('navHamburger');
+      if (drawer) drawer.hidden = true;
+      if (burger) {
+        burger.setAttribute('aria-expanded', 'false');
+        burger.classList.remove('navbar__hamburger--open');
+      }
+    };
+
+    document.getElementById('navHamburger')?.addEventListener('click', () => {
+      const drawer  = document.getElementById('navDrawer');
+      const burger  = document.getElementById('navHamburger');
+      if (!drawer) return;
+      const willOpen = drawer.hidden;
+      drawer.hidden  = !willOpen;
+      burger.setAttribute('aria-expanded', String(willOpen));
+      burger.classList.toggle('navbar__hamburger--open', willOpen);
+    });
+
+    /* Close drawer when clicking outside */
+    document.addEventListener('click', (e) => {
+      const navbar = document.getElementById('navbar');
+      if (navbar && !navbar.contains(e.target)) _closeDrawer();
+    });
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 9 — PASSWORD VISIBILITY TOGGLE
+    ───────────────────────────────────────────────────────────── */
+
+    const _togglePassword = (btn) => {
+      const input = document.getElementById(btn.dataset.togglePassword);
+      if (!input) return;
+      const isHidden = input.type === 'password';
+      input.type            = isHidden ? 'text' : 'password';
+      btn.textContent       = isHidden ? '🙈' : '👁';
+      btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+    };
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 10 — PASSWORD STRENGTH METER
+    ───────────────────────────────────────────────────────────── */
+
+    const _passwordStrength = (pw) => {
+      let score = 0;
+      if (pw.length >= 8)  score++;
+      if (pw.length >= 12) score++;
+      if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
+      if (/\d/.test(pw)) score++;
+      if (/[^a-zA-Z0-9]/.test(pw)) score++;
+      return Math.min(score, 4);
+    };
+
+    const PW_LABELS = ['Too weak', 'Weak', 'Fair', 'Good', 'Strong 💪'];
+    const PW_COLORS = ['#e63946', '#e07a00', '#f4a261', '#2a9d8f', '#4caf50'];
+
+    document.getElementById('signupPassword')?.addEventListener('input', function () {
+      const bar   = document.getElementById('pwStrength');
+      const fill  = document.getElementById('pwStrengthFill');
+      const label = document.getElementById('pwStrengthLabel');
+      if (!this.value) { bar.hidden = true; return; }
+      bar.hidden = false;
+      const s = _passwordStrength(this.value);
+      fill.style.width      = `${(s / 4) * 100}%`;
+      fill.style.background = PW_COLORS[s];
+      label.textContent     = PW_LABELS[s];
+      label.style.color     = PW_COLORS[s];
+    });
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 11 — DEMO DATA (placeholder until backend is live)
+    ───────────────────────────────────────────────────────────── */
+
+    const DEMO_STORIES = [
+      {
+        id: 'demo-1',
+        username:  'rocky_the_lab',
+        petName:   'Rocky',
+        petType:   'dog',
+        avatar:    '',
+        image_url: 'https://picsum.photos/seed/rocky/600/440',
+        caption:   'Morning zoomies in the park 🌳 This pup never gets tired!',
+        likes_count:    28,
+        comments_count: 6,
+        time_left: '19h left',
+        created_at: new Date(Date.now() - 18e5).toISOString(),
+        is_liked: false,
+      },
+      {
+        id: 'demo-2',
+        username:  'bella_the_poodle',
+        petName:   'Bella',
+        petType:   'cat',
+        avatar:    '',
+        image_url: 'https://picsum.photos/seed/bella/600/440',
+        caption:   'Sunbeam nap mode: activated ☀️😴',
+        likes_count:    54,
+        comments_count: 14,
+        time_left: '8h left',
+        created_at: new Date(Date.now() - 57e5).toISOString(),
+        is_liked: true,
+      },
+      {
+        id: 'demo-3',
+        username:  'max_fluffball',
+        petName:   'Max',
+        petType:   'rabbit',
+        avatar:    '',
+        image_url: 'https://picsum.photos/seed/maxfl/600/440',
+        caption:   'Found a new vegetable today. Verdict: 10/10 would binky again 🥕',
+        likes_count:    17,
+        comments_count: 3,
+        time_left: '3h left',
+        created_at: new Date(Date.now() - 75e5).toISOString(),
+        is_liked: false,
+      },
+      {
+        id: 'demo-4',
+        username:  'charlie_bird',
+        petName:   'Charlie',
+        petType:   'bird',
+        avatar:    '',
+        image_url: 'https://picsum.photos/seed/charl/600/440',
+        caption:   'Learning new words. Current vocabulary: "pizza". 🍕🦜',
+        likes_count:    72,
+        comments_count: 22,
+        time_left: '22h left',
+        created_at: new Date(Date.now() - 6e5).toISOString(),
+        is_liked: false,
+      },
+      {
+        id: 'demo-5',
+        username:  'luna_husky',
+        petName:   'Luna',
+        petType:   'dog',
+        avatar:    '',
+        image_url: 'https://picsum.photos/seed/lunahusk/600/440',
+        caption:   'First snow day ever ❄️ I am completely obsessed with this white stuff.',
+        likes_count:    103,
+        comments_count: 41,
+        time_left: '15h left',
+        created_at: new Date(Date.now() - 32e5).toISOString(),
+        is_liked: true,
+      },
+    ];
+
+    const DEMO_PROFILE_STORIES = [
+      { id:'p1', image_url:'https://picsum.photos/seed/my1/300/300', caption:'Bath time struggles',     time_left:'4h left',  likes_count: 12 },
+      { id:'p2', image_url:'https://picsum.photos/seed/my2/300/300', caption:'This is MY couch now',   time_left:'11h left', likes_count: 29 },
+      { id:'p3', image_url:'https://picsum.photos/seed/my3/300/300', caption:'Found dad\'s shoes 🥿', time_left:'20h left', likes_count: 7  },
+    ];
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 12 — STORY CARD BUILDER
+    ───────────────────────────────────────────────────────────── */
+
+    /**
+     * Build and return a story-card <article> element.
+     * @param {Object} story
+     * @returns {HTMLElement}
+     */
+    const buildStoryCard = (story) => {
+      const avatarSrc = story.avatar || svgAvatar(story.username ?? '');
+      const liked     = Boolean(story.is_liked);
+
+      const article   = document.createElement('article');
+      article.className       = 'story-card';
+      article.dataset.storyId = String(story.id);
+      article.setAttribute('aria-label', `Story by ${story.username}`);
+
+      article.innerHTML = `
+        <div class="story-card__header">
+          <div class="story-card__avatar-wrap">
+            <img
+              class="story-card__avatar"
+              src="${esc(avatarSrc)}"
+              alt="${esc(story.username)}'s avatar"
+              width="46" height="46"
+              loading="lazy"
+              onerror="this.src='${svgAvatar(story.username ?? '')}'"
             />
           </div>
-
-          <!-- Image Preview -->
-          <div class="image-preview-wrap" id="image-preview" aria-label="Image preview" aria-live="polite">
-            <div class="image-preview-placeholder">
-              <span aria-hidden="true">🖼️</span>
-              <span>Preview will appear here</span>
-            </div>
+          <div class="story-card__meta">
+            <span class="story-card__pet-name">${esc(story.petName ?? story.username)}</span>
+            <span class="story-card__username">@${esc(story.username)}</span>
           </div>
-
-          <!-- Caption -->
-          <div class="form-group">
-            <label class="form-label" for="story-caption">
-              Caption
-              <span class="label-hint" aria-label="optional">Optional</span>
-            </label>
-            <textarea
-              class="form-input form-textarea"
-              id="story-caption"
-              name="caption"
-              placeholder="What's your pet up to? Share the moment..."
-              maxlength="150"
-              rows="4"
-              aria-describedby="char-counter"
-            ></textarea>
-            <div class="char-counter" id="char-counter" aria-live="polite" aria-atomic="true">
-              <span id="char-count">0</span> / 150 characters
-            </div>
-          </div>
-
-          <!-- Story Duration Info -->
-          <div class="create-info-card" role="note" aria-label="Story duration information">
-            <span class="create-info-icon" aria-hidden="true">⏳</span>
-            <div>
-              <strong>Your story expires in 24 hours</strong>
-              <p>After 24 hours, this story will be permanently deleted from all feeds.</p>
-            </div>
-          </div>
-
-          <a href="#feed" class="btn btn-accent btn-full btn-lg" role="button" aria-label="Post your story">
-            Post Story
-          </a>
-
-        </form>
-
-      </div>
-    </section>
-
-    <!-- ─────────────────────────────────────────
-         SECTION 6: PROFILE
-    ──────────────────────────────────────────── -->
-    <section id="profile" class="section section-profile" aria-label="Profile page">
-      <div class="container">
-
-        <div class="page-header">
-          <a href="#feed" class="back-btn" aria-label="Back to feed">
-            <span aria-hidden="true">←</span>
-          </a>
-          <h2 class="page-title">Profile</h2>
-          <a href="#settings" class="icon-btn" aria-label="Open settings">⚙️</a>
+          <span class="story-card__time-badge">${esc(story.time_left ?? '')}</span>
         </div>
 
-        <!-- Profile Hero -->
-        <div class="profile-hero">
-          <div class="profile-avatar-ring" aria-hidden="true">
-            <div class="profile-avatar-inner">
-              <span class="profile-avatar-emoji" aria-hidden="true">🐶</span>
-            </div>
-          </div>
-          <div class="profile-info">
-            <h1 class="profile-username">@goldenmamakai</h1>
-            <p class="profile-petline">
-              <span class="profile-petname">Kai</span>
-              <span class="profile-separator" aria-hidden="true">·</span>
-              <span class="profile-pettype">🐕 Golden Retriever</span>
-            </p>
-          </div>
-          <a href="#settings" class="btn btn-ghost btn-sm profile-edit-btn">Edit Profile</a>
+        <div class="story-card__image-wrap">
+          <img
+            class="story-card__image"
+            src="${esc(story.image_url)}"
+            alt="Photo by ${esc(story.username)}"
+            loading="lazy"
+            decoding="async"
+            onerror="this.closest('.story-card__image-wrap').classList.add('story-card__image-wrap--error')"
+          />
         </div>
 
-        <!-- Profile Stats -->
-        <div class="profile-stats" role="list" aria-label="Profile statistics">
-          <div class="profile-stat" role="listitem">
-            <span class="stat-value">24</span>
-            <span class="stat-label">Total Stories</span>
-          </div>
-          <div class="profile-stat" role="listitem">
-            <span class="stat-value">2</span>
-            <span class="stat-label">Active Now</span>
-          </div>
-          <div class="profile-stat" role="listitem">
-            <span class="stat-value">14</span>
-            <span class="stat-label">Days Streak</span>
-          </div>
-        </div>
+        ${story.caption ? `
+        <p class="story-card__caption">${esc(story.caption)}</p>
+        ` : ''}
 
-        <!-- Active Stories -->
-        <section class="profile-stories" aria-label="Active stories">
-          <h3 class="section-label">Active Stories</h3>
-
-          <div class="profile-story-grid" role="list" aria-label="Your active stories">
-
-            <article class="profile-story-card" role="listitem" aria-label="Park zoomies story">
-              <div class="profile-story-thumb story-img-1" role="img" aria-label="Kai in the park">
-                <span aria-hidden="true">🐕</span>
-              </div>
-              <div class="profile-story-meta">
-                <span class="profile-story-caption">Kai discovered leaf piles…</span>
-                <span class="profile-story-badge" aria-label="17 hours remaining">17h left</span>
-              </div>
-            </article>
-
-            <article class="profile-story-card" role="listitem" aria-label="Morning walk story">
-              <div class="profile-story-thumb story-img-4" role="img" aria-label="Kai on a morning walk">
-                <span aria-hidden="true">🌅</span>
-              </div>
-              <div class="profile-story-meta">
-                <span class="profile-story-caption">Best morning walk ever…</span>
-                <span class="profile-story-badge" aria-label="21 hours remaining">21h left</span>
-              </div>
-            </article>
-
-          </div>
-
-          <div class="profile-stories-empty" aria-label="No more active stories message">
-            <p>Stories expire after 24h. <a href="#create" class="auth-link">Post a new one?</a></p>
-          </div>
-
-        </section>
-
-      </div>
-    </section>
-
-    <!-- ─────────────────────────────────────────
-         SECTION 7: SETTINGS
-    ──────────────────────────────────────────── -->
-    <section id="settings" class="section section-settings" aria-label="Settings page">
-      <div class="container container-narrow">
-
-        <div class="page-header">
-          <a href="#profile" class="back-btn" aria-label="Back to profile">
-            <span aria-hidden="true">←</span>
-          </a>
-          <h2 class="page-title">Settings</h2>
-          <span class="page-header-spacer" aria-hidden="true"></span>
-        </div>
-
-        <form class="settings-form" id="settings-form" novalidate aria-label="Settings form">
-
-          <!-- Account Settings -->
-          <fieldset class="settings-group">
-            <legend class="settings-group-title">Account</legend>
-
-            <div class="form-group">
-              <label class="form-label" for="settings-username">Username</label>
-              <input
-                class="form-input"
-                type="text"
-                id="settings-username"
-                name="username"
-                value="@goldenmamakai"
-                autocomplete="username"
-              />
-            </div>
-
-          </fieldset>
-
-          <!-- Pet Settings -->
-          <fieldset class="settings-group">
-            <legend class="settings-group-title">Pet Profile</legend>
-
-            <div class="form-group">
-              <label class="form-label" for="settings-petname">Pet's Name</label>
-              <input
-                class="form-input"
-                type="text"
-                id="settings-petname"
-                name="petname"
-                value="Kai"
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="settings-pettype">Pet Type</label>
-              <select class="form-input form-select" id="settings-pettype" name="pettype">
-                <option value="dog" selected>🐕 Dog</option>
-                <option value="cat">🐈 Cat</option>
-                <option value="rabbit">🐇 Rabbit</option>
-                <option value="bird">🐦 Bird</option>
-                <option value="hamster">🐹 Hamster</option>
-                <option value="fish">🐠 Fish</option>
-                <option value="turtle">🐢 Turtle</option>
-                <option value="snake">🐍 Snake</option>
-                <option value="guinea-pig">Guinea Pig</option>
-                <option value="ferret">Ferret</option>
-                <option value="hedgehog">🦔 Hedgehog</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-          </fieldset>
-
-          <!-- Password Settings -->
-          <fieldset class="settings-group">
-            <legend class="settings-group-title">Change Password</legend>
-
-            <div class="form-group">
-              <label class="form-label" for="settings-current-password">Current Password</label>
-              <input
-                class="form-input"
-                type="password"
-                id="settings-current-password"
-                name="current-password"
-                placeholder="••••••••"
-                autocomplete="current-password"
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="settings-new-password">New Password</label>
-              <input
-                class="form-input"
-                type="password"
-                id="settings-new-password"
-                name="new-password"
-                placeholder="Min. 8 characters"
-                autocomplete="new-password"
-                minlength="8"
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="settings-confirm-password">Confirm New Password</label>
-              <input
-                class="form-input"
-                type="password"
-                id="settings-confirm-password"
-                name="confirm-password"
-                placeholder="Repeat new password"
-                autocomplete="new-password"
-                minlength="8"
-              />
-            </div>
-
-          </fieldset>
-
-          <!-- Preferences -->
-          <fieldset class="settings-group">
-            <legend class="settings-group-title">Preferences</legend>
-
-            <div class="settings-toggle-row">
-              <div class="settings-toggle-info">
-                <span class="settings-toggle-label">Story expiry reminders</span>
-                <span class="settings-toggle-desc">Notify when your story has 2h left</span>
-              </div>
-              <label class="toggle-switch" aria-label="Toggle story expiry reminders">
-                <input type="checkbox" class="toggle-input" checked />
-                <span class="toggle-track" aria-hidden="true">
-                  <span class="toggle-thumb" aria-hidden="true"></span>
-                </span>
-              </label>
-            </div>
-
-            <div class="settings-toggle-row">
-              <div class="settings-toggle-info">
-                <span class="settings-toggle-label">Feed notifications</span>
-                <span class="settings-toggle-desc">Know when friends post new stories</span>
-              </div>
-              <label class="toggle-switch" aria-label="Toggle feed notifications">
-                <input type="checkbox" class="toggle-input" />
-                <span class="toggle-track" aria-hidden="true">
-                  <span class="toggle-thumb" aria-hidden="true"></span>
-                </span>
-              </label>
-            </div>
-
-          </fieldset>
-
-          <button type="submit" class="btn btn-accent btn-full btn-lg" aria-label="Save all changes">
-            Save Changes
+        <div class="story-card__actions" role="group" aria-label="Story actions">
+          <button
+            class="story-card__action-btn story-card__like-btn${liked ? ' story-card__like-btn--liked' : ''}"
+            data-action="like"
+            aria-label="${liked ? 'Unlike' : 'Like'} story"
+            aria-pressed="${liked}"
+          >
+            <span class="story-card__action-icon" aria-hidden="true">${liked ? '❤️' : '🤍'}</span>
+            <span class="story-card__action-count">${(story.likes_count ?? 0).toLocaleString()}</span>
           </button>
 
-          <!-- Danger Zone -->
-          <details class="danger-zone" aria-label="Danger zone">
-            <summary class="danger-zone-title" aria-expanded="false">Danger Zone</summary>
-            <div class="danger-zone-body">
-              <p class="danger-desc">These actions are permanent and cannot be undone.</p>
-              <button type="button" class="btn btn-danger btn-full">Delete All My Stories</button>
-              <button type="button" class="btn btn-danger-outline btn-full">Delete Account</button>
-            </div>
-          </details>
+          <button
+            class="story-card__action-btn"
+            data-action="comment"
+            aria-label="${story.comments_count ?? 0} comments"
+          >
+            <span class="story-card__action-icon" aria-hidden="true">💬</span>
+            <span class="story-card__action-count">${(story.comments_count ?? 0).toLocaleString()}</span>
+          </button>
 
-        </form>
-
-      </div>
-    </section>
-
-    <!-- ─────────────────────────────────────────
-         SECTION 8: 404 NOT FOUND
-    ──────────────────────────────────────────── -->
-    <section id="notfound" class="section section-404" aria-label="Page not found">
-      <div class="container container-narrow">
-        <div class="notfound-card">
-          <div class="notfound-emoji" aria-hidden="true">🐾</div>
-          <h2 class="notfound-title">Oops! Page Not Found</h2>
-          <p class="notfound-desc">Looks like this page wandered off like an unsupervised pet. Let's get you back home.</p>
-          <a href="#home" class="btn btn-accent btn-lg">Back to Home</a>
+          <button
+            class="story-card__action-btn story-card__share-btn"
+            data-action="share"
+            aria-label="Share story"
+          >
+            <span class="story-card__action-icon" aria-hidden="true">↗</span>
+            <span class="story-card__action-count">Share</span>
+          </button>
         </div>
-      </div>
-    </section>
+      `;
 
-  </main>
+      return article;
+    };
 
-  <!-- ═══════════════════════════════════════════
-       FOOTER (landing only)
-  ══════════════════════════════════════════════ -->
-  <footer class="app-footer" id="app-footer" role="contentinfo">
-    <div class="container">
-      <div class="footer-inner">
-        <span class="footer-logo" aria-label="PetStory">🐾 PetStory</span>
-        <nav class="footer-links" aria-label="Footer navigation">
-          <a href="#home" class="footer-link">Home</a>
-          <a href="#login" class="footer-link">Login</a>
-          <a href="#signup" class="footer-link">Sign Up</a>
-        </nav>
-        <p class="footer-copy">&copy; 2025 PetStory. Stories disappear. Memories don't.</p>
-      </div>
-    </div>
-  </footer>
 
-  <script>
-    // ─── Minimal SPA routing via hash ───────────────────────────────────────
-    (function () {
-      const sections = document.querySelectorAll('.section');
-      const appHeader = document.getElementById('app-header');
-      const appFooter = document.getElementById('app-footer');
-      const feedSections = ['feed', 'create', 'profile', 'settings'];
-      const noHeaderSections = ['home', 'login', 'signup', 'notfound'];
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 13 — LIKE STORY (optimistic update + rollback)
+    ───────────────────────────────────────────────────────────── */
 
-      function showSection(hash) {
-        const id = hash.replace('#', '') || 'home';
-        let found = false;
-        sections.forEach(function (sec) {
-          if (sec.id === id) {
-            sec.classList.add('active');
-            sec.removeAttribute('aria-hidden');
-            found = true;
-          } else {
-            sec.classList.remove('active');
-            sec.setAttribute('aria-hidden', 'true');
-          }
-        });
-        if (!found) {
-          const nf = document.getElementById('notfound');
-          if (nf) { nf.classList.add('active'); nf.removeAttribute('aria-hidden'); }
+    /**
+     * Handle a like action on a story card.
+     * @param {HTMLButtonElement} btn
+     */
+    const likeStory = async (btn) => {
+      if (!session.isLoggedIn()) {
+        showToast('Sign in to like stories 🐾', 'info');
+        return;
+      }
+      if (btn.dataset.pending === 'true') return;
+
+      const storyId   = btn.closest('.story-card')?.dataset.storyId;
+      if (!storyId) return;
+
+      const wasLiked  = btn.getAttribute('aria-pressed') === 'true';
+      const icon      = btn.querySelector('.story-card__action-icon');
+      const count     = btn.querySelector('.story-card__action-count');
+      const prevCount = parseInt(count.textContent.replace(/,/g, ''), 10) || 0;
+
+      /* Optimistic update */
+      const nowLiked = !wasLiked;
+      btn.setAttribute('aria-pressed', String(nowLiked));
+      btn.setAttribute('aria-label', nowLiked ? 'Unlike story' : 'Like story');
+      btn.classList.toggle('story-card__like-btn--liked', nowLiked);
+      btn.classList.add('story-card__like-btn--burst');
+      icon.textContent  = nowLiked ? '❤️' : '🤍';
+      count.textContent = (nowLiked ? prevCount + 1 : Math.max(0, prevCount - 1)).toLocaleString();
+      btn.dataset.pending = 'true';
+
+      setTimeout(() => btn.classList.remove('story-card__like-btn--burst'), 500);
+
+      try {
+        await apiLike(storyId);
+      } catch {
+        /* Rollback */
+        btn.setAttribute('aria-pressed', String(wasLiked));
+        btn.classList.toggle('story-card__like-btn--liked', wasLiked);
+        icon.textContent  = wasLiked ? '❤️' : '🤍';
+        count.textContent = prevCount.toLocaleString();
+        showToast('Could not update like. Try again.', 'error');
+      } finally {
+        btn.dataset.pending = 'false';
+      }
+    };
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 14 — SHARE STORY
+    ───────────────────────────────────────────────────────────── */
+
+    /**
+     * Share a story via Web Share API or clipboard fallback.
+     * @param {string} storyId
+     */
+    const shareStory = async (storyId) => {
+      const url   = `${location.origin}/story/${encodeURIComponent(storyId)}`;
+      const title = 'Check out this pet story on PetWorld!';
+      if (navigator.share) {
+        try { await navigator.share({ title, url }); }
+        catch { /* user cancelled */ }
+      } else {
+        try {
+          await navigator.clipboard.writeText(url);
+          showToast('Link copied to clipboard! 🐾', 'success');
+        } catch {
+          showToast('Copy this link: ' + url);
         }
-        const inFeed = feedSections.indexOf(id) !== -1;
-        appHeader.classList.toggle('visible', inFeed);
-        appFooter.classList.toggle('visible', !inFeed);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 15 — STORY VIEWER MODAL
+    ───────────────────────────────────────────────────────────── */
+
+    const _openStoryModal = (story) => {
+      const modal    = document.getElementById('storyModal');
+      const imgEl    = document.getElementById('storyModalImage');
+      const caption  = document.getElementById('storyModalCaption');
+      const time     = document.getElementById('storyModalTime');
+      const username = document.getElementById('storyModalUsername');
+      const petTag   = document.getElementById('storyModalPetTag');
+      const avatar   = document.getElementById('storyModalAvatar');
+      const progress = document.getElementById('storyProgressFill');
+
+      imgEl.src              = story.image_url;
+      imgEl.alt              = `Story by ${story.username}`;
+      caption.textContent    = story.caption ?? '';
+      time.textContent       = story.time_left ?? relativeTime(story.created_at);
+      username.textContent   = `@${story.username}`;
+      petTag.textContent     = `${story.petName ?? ''} ${petEmoji(story.petType)}`;
+      avatar.textContent     = petEmoji(story.petType);
+
+      /* Restart progress animation */
+      progress.style.animation = 'none';
+      requestAnimationFrame(() => { progress.style.animation = ''; });
+
+      modal.hidden = false;
+      document.body.classList.add('modal-open');
+      document.getElementById('storyModalClose')?.focus();
+    };
+
+    const _closeStoryModal = () => {
+      document.getElementById('storyModal').hidden = true;
+      document.body.classList.remove('modal-open');
+    };
+
+    document.getElementById('storyModalClose')?.addEventListener('click', _closeStoryModal);
+    document.getElementById('storyModalBackdrop')?.addEventListener('click', _closeStoryModal);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') _closeStoryModal();
+    });
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 16 — FEED PAGE INIT
+    ───────────────────────────────────────────────────────────── */
+
+    const _initFeed = async () => {
+      const feedCards = document.getElementById('feedCards');
+      const feedEmpty = document.getElementById('feedEmpty');
+      const strip     = document.getElementById('storiesStrip');
+
+      feedCards.innerHTML = '<div class="feed-skeleton" aria-hidden="true">' +
+        '<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-lines"><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>'.repeat(3) +
+        '</div>';
+      feedEmpty.hidden = true;
+
+      let stories;
+      try {
+        const data = await apiFetchFeed();
+        stories = Array.isArray(data) ? data : (data.posts ?? []);
+      } catch {
+        /* Fall back to demo data when backend is unavailable */
+        stories = DEMO_STORIES;
       }
 
-      window.addEventListener('hashchange', function () {
-        showSection(window.location.hash);
+      /* Remove skeletons */
+      feedCards.innerHTML = '';
+
+      /* Build stories-strip */
+      strip.innerHTML = '';
+      stories.slice(0, 8).forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'stories-strip__item';
+        btn.setAttribute('aria-label', `${s.petName ?? s.username}'s story`);
+        btn.innerHTML = `
+          <div class="stories-strip__ring">
+            <img
+              class="stories-strip__avatar"
+              src="${esc(s.avatar || svgAvatar(s.username ?? ''))}"
+              alt="${esc(s.username)}"
+              width="52" height="52"
+              loading="lazy"
+              onerror="this.src='${svgAvatar(s.username ?? '')}'"
+            />
+          </div>
+          <span class="stories-strip__name">${esc((s.petName ?? s.username).slice(0, 8))}</span>
+        `;
+        btn.addEventListener('click', () => _openStoryModal(s));
+        strip.appendChild(btn);
       });
-      showSection(window.location.hash);
 
-      // ─── Character counter ─────────────────────────────────────────────
-      const captionArea = document.getElementById('story-caption');
-      const charCount = document.getElementById('char-count');
-      if (captionArea && charCount) {
-        captionArea.addEventListener('input', function () {
-          charCount.textContent = captionArea.value.length;
-        });
+      if (!stories.length) {
+        feedEmpty.hidden = false;
+        return;
       }
 
-      // ─── Upload zone interaction ───────────────────────────────────────
-      const uploadZone = document.getElementById('upload-zone');
-      const fileInput = document.getElementById('story-image');
-      const preview = document.getElementById('image-preview');
+      /* Render cards with staggered animation */
+      const frag = document.createDocumentFragment();
+      stories.forEach((story, i) => {
+        const card = buildStoryCard(story);
+        card.style.animationDelay = `${i * 70}ms`;
+        frag.appendChild(card);
+      });
+      feedCards.appendChild(frag);
+    };
 
-      if (uploadZone && fileInput) {
-        uploadZone.addEventListener('click', function () { fileInput.click(); });
-        uploadZone.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
-        });
-        uploadZone.addEventListener('dragover', function (e) {
-          e.preventDefault();
-          uploadZone.classList.add('drag-over');
-        });
-        uploadZone.addEventListener('dragleave', function () {
-          uploadZone.classList.remove('drag-over');
-        });
-        uploadZone.addEventListener('drop', function (e) {
-          e.preventDefault();
-          uploadZone.classList.remove('drag-over');
-          const file = e.dataTransfer.files[0];
-          if (file) { handlePreview(file); }
-        });
-        fileInput.addEventListener('change', function () {
-          if (fileInput.files[0]) { handlePreview(fileInput.files[0]); }
-        });
+    /* Feed event delegation */
+    document.getElementById('feedCards')?.addEventListener('click', (e) => {
+      const card = e.target.closest('.story-card');
+      if (!card) return;
+
+      const likeBtn   = e.target.closest('[data-action="like"]');
+      const commentBtn= e.target.closest('[data-action="comment"]');
+      const shareBtn  = e.target.closest('[data-action="share"]');
+
+      if (likeBtn)    likeStory(likeBtn);
+      if (shareBtn)   shareStory(card.dataset.storyId);
+      if (commentBtn) {
+        if (!session.isLoggedIn()) { showToast('Sign in to comment 🐾', 'info'); return; }
+        showToast('Comment panel coming soon! 💬');
+      }
+    });
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 17 — LOGIN FORM
+    ───────────────────────────────────────────────────────────── */
+
+    document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email       = document.getElementById('loginEmail').value.trim();
+      const password    = document.getElementById('loginPassword').value;
+      const apiErrBanner= document.getElementById('loginApiError');
+      const apiErrMsg   = document.getElementById('loginApiErrorMsg');
+      const spinner     = document.getElementById('loginSpinner');
+      const btnText     = document.getElementById('loginBtnText');
+      const submitBtn   = document.getElementById('loginSubmitBtn');
+
+      /* Client-side validation */
+      let valid = true;
+      const setErr = (id, msg) => { const el = document.getElementById(id); if (el) el.textContent = msg; valid = false; };
+      const clrErr = (id)      => { const el = document.getElementById(id); if (el) el.textContent = ''; };
+
+      clrErr('loginEmailError');
+      clrErr('loginPasswordError');
+      apiErrBanner.hidden = true;
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))
+        setErr('loginEmailError', 'Please enter a valid email address.');
+      if (!password)
+        setErr('loginPasswordError', 'Password is required.');
+      if (!valid) return;
+
+      /* Loading state */
+      spinner.hidden = false;
+      btnText.style.opacity = '0';
+      submitBtn.disabled    = true;
+
+      try {
+        const data = await apiLogin(email, password);
+        session.save(data.token, data.user);
+        showToast('Welcome back! 🐾', 'success');
+        showPage('feed-page');
+      } catch (err) {
+        apiErrMsg.textContent = err.name === 'AbortError'
+          ? 'Request timed out. Check your connection.'
+          : err.message;
+        apiErrBanner.hidden = false;
+      } finally {
+        spinner.hidden = true;
+        btnText.style.opacity = '1';
+        submitBtn.disabled    = false;
+      }
+    });
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 18 — SIGNUP FORM
+    ───────────────────────────────────────────────────────────── */
+
+    document.getElementById('signupForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username    = document.getElementById('signupUsername').value.trim();
+      const email       = document.getElementById('signupEmail').value.trim();
+      const password    = document.getElementById('signupPassword').value;
+      const petName     = document.getElementById('signupPetName').value.trim();
+      const petType     = document.getElementById('signupPetType').value;
+      const apiErrBanner= document.getElementById('signupApiError');
+      const apiErrMsg   = document.getElementById('signupApiErrMsg');
+      const spinner     = document.getElementById('signupSpinner');
+      const btnText     = document.getElementById('signupBtnText');
+      const submitBtn   = document.getElementById('signupSubmitBtn');
+
+      let valid = true;
+      const setErr = (id, msg) => { const el = document.getElementById(id); if (el) el.textContent = msg; valid = false; };
+      const clrErr = (id)      => { const el = document.getElementById(id); if (el) el.textContent = ''; };
+
+      ['signupUsernameError','signupEmailError','signupPasswordError','signupPetNameError','signupPetTypeError'].forEach(clrErr);
+      apiErrBanner.hidden = true;
+
+      if (!username || !/^[a-zA-Z0-9_\-]{3,30}$/.test(username))
+        setErr('signupUsernameError', '3–30 characters: letters, numbers, _ or - only.');
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))
+        setErr('signupEmailError', 'Please enter a valid email address.');
+      if (!password || password.length < 8)
+        setErr('signupPasswordError', 'Password must be at least 8 characters.');
+      if (!petName)
+        setErr('signupPetNameError', 'Pet name is required.');
+      if (!petType)
+        setErr('signupPetTypeError', 'Please select your pet type.');
+      if (!valid) return;
+
+      spinner.hidden = false;
+      btnText.style.opacity = '0';
+      submitBtn.disabled    = true;
+
+      try {
+        await apiSignup({ username, email, password, petName, petType });
+        showToast('Account created! Check your email to verify. 🐾', 'success');
+        showPage('login-page');
+      } catch (err) {
+        apiErrMsg.textContent = err.name === 'AbortError'
+          ? 'Request timed out. Check your connection.'
+          : err.message;
+        apiErrBanner.hidden = false;
+      } finally {
+        spinner.hidden = true;
+        btnText.style.opacity = '1';
+        submitBtn.disabled    = false;
+      }
+    });
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 19 — LOGOUT
+    ───────────────────────────────────────────────────────────── */
+
+    /**
+     * Log the current user out.
+     * Clears session, shows toast, navigates to landing.
+     */
+    const logout = async () => {
+      try { await apiLogout(); } catch { /* ignore */ }
+      session.clear();
+      showToast('Logged out. See you soon! 🐾');
+      showPage('landing-page');
+    };
+
+    document.getElementById('navLogoutBtn')?.addEventListener('click', logout);
+    document.getElementById('drawerLogoutBtn')?.addEventListener('click', logout);
+    document.getElementById('settingsLogoutBtn')?.addEventListener('click', logout);
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 20 — CREATE STORY PAGE
+    ───────────────────────────────────────────────────────────── */
+
+    const uploadZone   = document.getElementById('uploadZone');
+    const photoInput   = document.getElementById('photoInput');
+    const uploadPrompt = document.getElementById('uploadPrompt');
+    const uploadPreview= document.getElementById('uploadPreview');
+    const previewImage = document.getElementById('previewImage');
+    const removeImgBtn = document.getElementById('removeImageBtn');
+    const uploadError  = document.getElementById('uploadError');
+    let   selectedFile = null;
+
+    const _showPreview = (file) => {
+      if (!file?.type.startsWith('image/')) {
+        showToast('Please select a valid image file.', 'error');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('Image must be under 5 MB.', 'error');
+        return;
+      }
+      selectedFile = file;
+      uploadError.textContent = '';
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        previewImage.src     = ev.target.result;
+        uploadPrompt.hidden  = true;
+        uploadPreview.hidden = false;
+        uploadZone.classList.add('upload-zone--has-image');
+      };
+      reader.readAsDataURL(file);
+    };
+
+    const _clearPreview = () => {
+      selectedFile         = null;
+      previewImage.src     = '';
+      uploadPrompt.hidden  = false;
+      uploadPreview.hidden = true;
+      uploadZone.classList.remove('upload-zone--has-image');
+      if (photoInput) photoInput.value = '';
+    };
+
+    /* Click to open file browser */
+    uploadZone?.addEventListener('click', (e) => {
+      if (!e.target.closest('#uploadPreview') && !e.target.closest('#removeImageBtn')) {
+        photoInput?.click();
+      }
+    });
+    uploadZone?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); photoInput?.click(); }
+    });
+
+    photoInput?.addEventListener('change', (e) => {
+      if (e.target.files[0]) _showPreview(e.target.files[0]);
+    });
+
+    removeImgBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      _clearPreview();
+    });
+
+    /* Drag and drop */
+    uploadZone?.addEventListener('dragover',  (e) => { e.preventDefault(); uploadZone.classList.add('upload-zone--dragging'); });
+    uploadZone?.addEventListener('dragleave', ()  => uploadZone.classList.remove('upload-zone--dragging'));
+    uploadZone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('upload-zone--dragging');
+      if (e.dataTransfer.files[0]) _showPreview(e.dataTransfer.files[0]);
+    });
+
+    /* Caption character counter */
+    document.getElementById('storyCaption')?.addEventListener('input', function () {
+      const counter = document.getElementById('captionCharCount');
+      if (counter) counter.textContent = this.value.length;
+    });
+
+    /* Create story form submit */
+    document.getElementById('createStoryForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const caption     = document.getElementById('storyCaption').value.trim();
+      const expiry      = document.getElementById('storyExpiry').value;
+      const apiErrBanner= document.getElementById('createApiError');
+      const apiErrMsg   = document.getElementById('createApiErrorMsg');
+      const spinner     = document.getElementById('createSpinner');
+      const btnText     = document.getElementById('createBtnText');
+      const btn         = document.getElementById('createStoryBtn');
+
+      uploadError.textContent = '';
+      apiErrBanner.hidden     = true;
+
+      if (!selectedFile) {
+        uploadError.textContent = 'Please select a photo for your story.';
+        return;
       }
 
-      function handlePreview(file) {
-        if (!file.type.startsWith('image/')) return;
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview of uploaded pet photo" class="preview-img" />';
-          preview.classList.add('has-image');
-        };
-        reader.readAsDataURL(file);
+      spinner.hidden = false;
+      btnText.style.opacity = '0';
+      btn.disabled          = true;
+
+      try {
+        /*
+         * TODO: Upload selectedFile to Cloudflare R2 first,
+         * then call apiCreate() with the returned image URL.
+         * For now we use a picsum placeholder.
+         */
+        const placeholderUrl = `https://picsum.photos/seed/${Date.now()}/600/440`;
+        await apiCreate(placeholderUrl, caption, expiry);
+        showToast('Story posted! 🐾', 'success');
+        _clearPreview();
+        document.getElementById('storyCaption').value = '';
+        document.getElementById('captionCharCount').textContent = '0';
+        showPage('feed-page');
+      } catch (err) {
+        apiErrMsg.textContent = err.name === 'AbortError'
+          ? 'Request timed out. Check your connection.'
+          : err.message;
+        apiErrBanner.hidden = false;
+      } finally {
+        spinner.hidden = true;
+        btnText.style.opacity = '1';
+        btn.disabled          = false;
       }
-    }());
+    });
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 21 — PROFILE PAGE INIT
+    ───────────────────────────────────────────────────────────── */
+
+    const _initProfile = () => {
+      const user  = session.getUser();
+      const grid  = document.getElementById('profileStoriesGrid');
+      const empty = document.getElementById('profileStoriesEmpty');
+
+      /* Populate header fields */
+      document.getElementById('profileUsername').textContent  = `@${user?.username ?? 'you'}`;
+      document.getElementById('profilePetName').textContent   = user?.petName  ?? 'Your Pet';
+      document.getElementById('profilePetType').textContent   =
+        user?.petType ? user.petType.charAt(0).toUpperCase() + user.petType.slice(1) : 'Pet';
+      document.getElementById('profilePetBadge').textContent  = petEmoji(user?.petType ?? '');
+      document.getElementById('profileAvatarEmoji').textContent= petEmoji(user?.petType ?? '');
+      document.getElementById('profileStoryCount').textContent = DEMO_PROFILE_STORIES.length;
+      document.getElementById('profileLikesTotal').textContent =
+        DEMO_PROFILE_STORIES.reduce((acc, s) => acc + (s.likes_count ?? 0), 0);
+
+      /* Render story grid */
+      grid.innerHTML = '';
+      if (!DEMO_PROFILE_STORIES.length) {
+        empty.hidden = false;
+        return;
+      }
+      empty.hidden = true;
+
+      DEMO_PROFILE_STORIES.forEach(story => {
+        const item = document.createElement('div');
+        item.className = 'profile-story-item';
+        item.innerHTML = `
+          <img
+            class="profile-story-item__img"
+            src="${esc(story.image_url)}"
+            alt="${esc(story.caption ?? 'Story')}"
+            loading="lazy"
+          />
+          <div class="profile-story-item__overlay">
+            <span class="profile-story-item__time">${esc(story.time_left)}</span>
+            <span class="profile-story-item__likes">❤️ ${story.likes_count}</span>
+          </div>
+        `;
+        item.addEventListener('click', () =>
+          _openStoryModal({
+            ...story,
+            username: user?.username ?? 'me',
+            petName:  user?.petName ?? '',
+            petType:  user?.petType ?? '',
+          })
+        );
+        grid.appendChild(item);
+      });
+    };
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 22 — SETTINGS PAGE INIT + FORM
+    ───────────────────────────────────────────────────────────── */
+
+    const _initSettings = () => {
+      const user = session.getUser();
+      if (!user) return;
+      const el = (id) => document.getElementById(id);
+
+      if (el('settingsUsername')) el('settingsUsername').value = user.username ?? '';
+      if (el('settingsEmail'))    el('settingsEmail').value    = user.email    ?? '';
+      if (el('settingsPetName'))  el('settingsPetName').value  = user.petName  ?? '';
+      if (el('settingsPetType') && user.petType)
+        el('settingsPetType').value = user.petType;
+    };
+
+    document.getElementById('settingsForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username    = document.getElementById('settingsUsername').value.trim();
+      const petName     = document.getElementById('settingsPetName').value.trim();
+      const newPw       = document.getElementById('settingsNewPw').value;
+      const confirmPw   = document.getElementById('settingsConfirmPw').value;
+      const apiErrBanner= document.getElementById('settingsApiError');
+      const apiErrMsg   = document.getElementById('settingsApiErrorMsg');
+      const successBanner= document.getElementById('settingsSuccess');
+      const spinner     = document.getElementById('settingsSpinner');
+      const btnText     = document.getElementById('settingsBtnText');
+      const btn         = document.getElementById('settingsSaveBtn');
+
+      let valid = true;
+      const setErr = (id, msg) => { const el = document.getElementById(id); if (el) el.textContent = msg; valid = false; };
+      const clrErr = (id)      => { const el = document.getElementById(id); if (el) el.textContent = ''; };
+
+      ['settingsUsernameError','settingsPetNameError','settingsNewPwError','settingsConfirmPwError']
+        .forEach(clrErr);
+      apiErrBanner.hidden  = true;
+      successBanner.hidden = true;
+
+      if (username && !/^[a-zA-Z0-9_\-]{3,30}$/.test(username))
+        setErr('settingsUsernameError', '3–30 characters: letters, numbers, _ or - only.');
+      if (!petName)
+        setErr('settingsPetNameError', 'Pet name is required.');
+      if (newPw && newPw.length < 8)
+        setErr('settingsNewPwError', 'New password must be at least 8 characters.');
+      if (newPw && newPw !== confirmPw)
+        setErr('settingsConfirmPwError', 'Passwords do not match.');
+      if (!valid) return;
+
+      spinner.hidden = false;
+      btnText.style.opacity = '0';
+      btn.disabled          = true;
+
+      try {
+        /*
+         * TODO: Wire up PATCH /profile or equivalent Worker endpoint.
+         * For now we update the local session directly.
+         */
+        await new Promise(r => setTimeout(r, 600)); /* Simulated delay */
+
+        const user    = session.getUser() ?? {};
+        const petType = document.getElementById('settingsPetType')?.value ?? user.petType;
+        const email   = document.getElementById('settingsEmail')?.value.trim() ?? user.email;
+        session.save(session.getToken(), { ...user, username, email, petName, petType });
+
+        successBanner.hidden = false;
+        showToast('Settings saved! 🐾', 'success');
+        setTimeout(() => { successBanner.hidden = true; }, 4000);
+      } catch (err) {
+        apiErrMsg.textContent = err.message;
+        apiErrBanner.hidden   = false;
+      } finally {
+        spinner.hidden = true;
+        btnText.style.opacity = '1';
+        btn.disabled          = false;
+      }
+    });
+
+
+    /* ─────────────────────────────────────────────────────────────
+       SECTION 23 — BOOT
+    ───────────────────────────────────────────────────────────── */
+
+    /**
+     * Determine the initial page from hash or session state, then navigate.
+     */
+    const boot = () => {
+      const hash = location.hash.slice(1);
+
+      if (session.isLoggedIn()) {
+        /* Restore last page or default to feed */
+        const target = AUTHED_PAGES.has(hash) ? hash : 'feed-page';
+        _navigate(target);
+      } else {
+        const target = PUBLIC_PAGES.has(hash) ? hash : 'landing-page';
+        _navigate(target);
+      }
+    };
+
+    boot();
+
+  })(); /* End IIFE */
   </script>
 
 </body>
